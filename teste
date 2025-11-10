@@ -13,7 +13,7 @@ class Usuario:
     def get_email(self): return self.email
     def get_senha(self): return self.senha
     def get_nome(self): return self.nome
-
+ 
 #função para verificar se há cadastro do usuario no banco
 def ver_cadas(email, tabela):      
             existe = False
