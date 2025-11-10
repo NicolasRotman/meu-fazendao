@@ -1,6 +1,70 @@
-print("oi")
-nmgjirenbgjre
-g4rewjogfn4oiegfniow
-gw4ejuglenjuifkw
-gbnjeuiwgjkwre
-xswxwxwxw
+import bcrypt
+import time
+
+#"banco de dados" utilizado apenas até o banco sql real
+tabela = 'petz_prod'
+
+class Usuario:
+    def __init__(self, email, senha, nome):
+        self.email = email
+        self.senha = senha
+        self.nome = nome
+    
+    def get_email(self): return self.email
+    def get_senha(self): return self.senha
+    def get_nome(self): return self.nome
+
+#função para verificar se há cadastro do usuario no banco
+def ver_cadas(email, tabela):      
+            existe = False
+            #procura no banco se os dados já existem
+            with open(f"{tabela}.txt", "r") as arquivo:
+                linhas = arquivo.readlines()
+                for linha in linhas:
+                    partes = linha.strip().split(" : ")
+                    if len(partes) == 3 and partes[1] == email:
+                        existe = True
+                        break
+
+            if existe: return True
+            else: return False
+              
+def verific_senha(senha_correta):
+    cont = 2
+    timer = 10
+
+
+    while cont >= 0:
+        senha = input("Por favor digite a senha: ").encode()
+        if bcrypt.checkpw(senha, senha_correta):
+            print("senha correta")
+            return True
+        else:
+            print(f"senha incorreta, vc tem mais {cont} chances: ")
+
+        cont -= 1
+   
+    print("Conta bloqueada temporariamente")
+    timer += 20
+    time.sleep(timer)
+    return False
+
+while True:
+    email = input('Por favor, Digite seu email: ')
+    if not ver_cadas(email, tabela):
+        senha = input("Por favor, Digite a senha: ").encode()
+        nome = input('Por favor, Digite seu nome completo: ')
+
+        with open(f"{tabela}.txt", "a") as arquivo:
+            arquivo.write(f"{nome} : {email} : {senha.decode()}\n")
+    
+        usuario1 = Usuario(email, senha, nome)
+    else:
+        print('email Já cadastrado\nLogin')
+        with open(f"{tabela}.txt", "r") as arquivo:
+            linhas = arquivo.readlines()
+            for linha in linhas:
+                partes = linha.strip().split(" : ")
+                if len(partes) == 3 and partes[1] == email:
+                    senha_correta = partes[2]
+        verific_senha(senha_correta)
