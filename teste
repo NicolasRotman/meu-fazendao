@@ -6,7 +6,7 @@ tabela = 'petz_prod'
 
 class Usuario:
     def __init__(self, email, senha, nome):
-        self.email = email
+        self.email = email 
         self.senha = senha
         self.nome = nome
     
