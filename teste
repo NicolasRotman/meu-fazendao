@@ -4,6 +4,9 @@ import time
 #"banco de dados" utilizado apenas até o banco sql real
 tabela = 'petz_prod'
 
+with open("petz_prod.txt", 'w'):
+    print("arquivo produtos criado")
+
 class Usuario:
     def __init__(self, email, senha, nome):
         self.email = email
