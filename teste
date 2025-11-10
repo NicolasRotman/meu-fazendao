@@ -4,7 +4,6 @@ import time
 #"banco de dados" utilizado apenas até o banco sql real
 tabela = 'petz_prod'
 
-
 class Usuario:
     def __init__(self, email, senha, nome):
         self.email = email
@@ -50,22 +49,21 @@ def verific_senha(senha_correta):
     time.sleep(timer)
     return False
 
-while True:
-    email = input('Por favor, Digite seu email: ')
-    if not ver_cadas(email, tabela):
-        senha = input("Por favor, Digite a senha: ").encode()
-        nome = input('Por favor, Digite seu nome completo: ')
+email = input('Por favor, Digite seu email: ')
+if not ver_cadas(email, tabela):
+    senha = input("Por favor, Digite a senha: ").encode()
+    nome = input('Por favor, Digite seu nome completo: ')
 
-        with open(f"{tabela}.txt", "a") as arquivo:
+    with open(f"{tabela}.txt", "a") as arquivo:
             arquivo.write(f"{nome} : {email} : {senha.decode()}\n")
     
-        usuario1 = Usuario(email, senha, nome)
-    else:
-        print('email Já cadastrado\nLogin')
-        with open(f"{tabela}.txt", "r") as arquivo:
-            linhas = arquivo.readlines()
-            for linha in linhas:
-                partes = linha.strip().split(" : ")
-                if len(partes) == 3 and partes[1] == email:
-                    senha_correta = partes[2]
-        verific_senha(senha_correta)
+    usuario1 = Usuario(email, senha, nome)
+else:
+    print('email Já cadastrado\nLogin')
+    with open(f"{tabela}.txt", "r") as arquivo:
+        linhas = arquivo.readlines()
+        for linha in linhas:
+            partes = linha.strip().split(" : ")
+            if len(partes) == 3 and partes[1] == email:
+                senha_correta = partes[2]
+    verific_senha(senha_correta)
