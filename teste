@@ -2,11 +2,11 @@ import bcrypt
 import time
 
 #"banco de dados" utilizado apenas até o banco sql real
-tabela = 'petz_prod'
+tabela = 'meu_fazendao'
 
 class Usuario:
     def __init__(self, email, senha, nome):
-        self.email = email 
+        self.email = email
         self.senha = senha
         self.nome = nome
     
@@ -33,10 +33,9 @@ def verific_senha(senha_correta):
     cont = 2
     timer = 10
 
-
     while cont >= 0:
         senha = input("Por favor digite a senha: ").encode()
-        if bcrypt.checkpw(senha, senha_correta):
+        if bcrypt.checkpw(senha, senha_correta.encode()):
             print("senha correta")
             return True
         else:
@@ -51,11 +50,12 @@ def verific_senha(senha_correta):
 
 email = input('Por favor, Digite seu email: ')
 if not ver_cadas(email, tabela):
-    senha = input("Por favor, Digite a senha: ").encode()
+    senha = input("Cadastre Sua Senha: ").encode()
+    senha = bcrypt.hashpw(senha, bcrypt.gensalt()).decode()
     nome = input('Por favor, Digite seu nome completo: ')
 
     with open(f"{tabela}.txt", "a") as arquivo:
-            arquivo.write(f"{nome} : {email} : {senha.decode()}\n")
+            arquivo.write(f"{nome} : {email} : {senha}\n")
     
     usuario1 = Usuario(email, senha, nome)
 else:
