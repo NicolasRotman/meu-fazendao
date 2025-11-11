@@ -1,0 +1,47 @@
+from flask import Flask, render_template, request, redirect, url_for, flash
+import bcrypt
+import smtplib
+from email.message import EmailMessage
+
+app = Flask(__name__)
+app.secret_key = "segredo"  # Necessário para flash messages
+
+usuarios = {}  # dicionário apenas como exemplo (substituir por banco real)
+
+@app.route('/')
+def index():
+    return render_template('login.html')
+
+@app.route('/register', methods=['POST'])
+def register():
+    nome = request.form['nome']
+    email = request.form['email']
+    senha = request.form['senha'].encode('utf-8')
+
+    senha_hash = bcrypt.hashpw(senha, bcrypt.gensalt())
+
+    usuarios[email] = {'nome': nome, 'senha': senha_hash}
+
+    flash('✅ Usuário cadastrado com sucesso!')
+    return redirect(url_for('index'))
+
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    senha = request.form['senha'].encode('utf-8')
+
+    user = usuarios.get(email)
+
+    if user and bcrypt.checkpw(senha, user['senha']):
+        flash('✅ Login bem-sucedido!')
+        return redirect(url_for('painel'))
+    else:
+        flash('❌ Email ou senha incorretos!')
+        return redirect(url_for('index'))
+
+@app.route('/painel')
+def painel():
+    return "<h1>Bem-vindo ao painel!</h1>"
+
+if __name__ == '__main__':
+    app.run(debug=True)
