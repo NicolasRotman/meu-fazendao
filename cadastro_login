@@ -4,8 +4,6 @@ from email.message import EmailMessage
 import random
 import smtplib
 
-
-#"banco de dados" utilizado apenas até o banco sql real
 tabela = 'meu_fazendao'
 
 class Usuario:
@@ -13,126 +11,119 @@ class Usuario:
         self.email = email
         self.senha = senha
         self.nome = nome
-    
+
     def get_email(self): return self.email
     def get_senha(self): return self.senha
     def get_nome(self): return self.nome
 
-    def verific_senha(self,senha_correta, email, tabela):
+    def verific_senha(self, senha_correta, email, tabela):
         cont = 2
         timer = 10
-       
+
         while True:
-            while True:
-                try:
-                    pergunta = int(input("Digitar senha (0)\nEsqueci minha senha (1)\nResposta: "))
-                    while pergunta != 0 and pergunta != 1: int(input("Valor Inválido\n\nDigitar senha (0)\nEsqueci minha senha (1)\nResposta: "))
-                    break
-                except ValueError:print("valor Inválido")
-           
+            try:
+                pergunta = int(input("Digitar senha (0)\nEsqueci minha senha (1)\nResposta: "))
+                while pergunta not in [0, 1]:
+                    pergunta = int(input("Valor inválido.\n\nDigite 0 ou 1: "))
+            except ValueError:
+                print("Valor inválido")
+                continue
+
             if pergunta == 0:
                 while cont >= 0:
-                    senha = input("Por favor digite a senha: ").encode()
+                    senha = input("Por favor, digite a senha: ").encode()
                     if bcrypt.checkpw(senha, senha_correta.encode()):
-                        print("senha correta")
+                        print("✅ Senha correta!")
                         return senha
                     else:
-                        print(f"senha incorreta, vc tem mais {cont} chances: ")
+                        print(f"❌ Senha incorreta, você tem mais {cont} chances.")
+                        cont -= 1
 
-
-
-
-                    cont -= 1
-           
-                print("Conta bloqueada temporariamente")
-                timer += 20
+                print("🚫 Conta bloqueada temporariamente.")
                 time.sleep(timer)
+                timer += 20
+
             else:
                 cont2 = 2
-                codigo = random.randint(10000000,99999999)
-                codigo_c = codigo
-                enviar_email(email,"Redefinir Senha",f"Abaixo segue o codigo para realizar a alteração da senha\n{codigo_c}")
+                codigo = random.randint(10000000, 99999999)
+                enviar_email(email, "Redefinir Senha", f"Seu código para redefinir a senha é: {codigo}")
+
                 while cont2 >= 0:
-                    codigoen = int(input("Por favor digite o codigo de verificação enviado no email cadastrado: "))
-                    if codigo_c == codigoen:
-                        print("senha correta")
-                        nova_senha = input("Digite a nova senha: ").encode()
+                    try:
+                        codigoen = int(input("Digite o código de verificação enviado por e-mail: "))
+                    except ValueError:
+                        print("Código inválido.")
+                        cont2 -= 1
+                        continue
 
+                    if codigo == codigoen:
+                        print("✅ Código correto!")
+                        nova_senha = input("Digite a nova senha: ").encode('utf-8')
+                        nova_senha_hash = bcrypt.hashpw(nova_senha, bcrypt.gensalt()).decode('utf-8')
 
-                        with open(f"{tabela}", "r") as arquivo:
-                                linhas = arquivo.readlines()
+                        with open(f"{tabela}.txt", "r") as arquivo:
+                            linhas = arquivo.readlines()
+
                         with open(f"{tabela}.txt", "w") as arquivo:
-                                    for linha in linhas:
-                                        partes = linha.strip().split(" : ")
-                                        if len(partes) == 3 and partes[2] == email:
-                                            arquivo.write(f"{self.nome} : {email} : {nova_senha.decode()}\n")
-                                        else:
-                                            arquivo.write(linha)
-                        return senha
+                            for linha in linhas:
+                                partes = linha.strip().split(" : ")
+                                if len(partes) == 3 and partes[1].strip() == email.strip():
+                                    arquivo.write(f"{self.nome} : {email} : {nova_senha_hash}\n")
+                                else:
+                                    arquivo.write(linha)
+
+                        print("✅ Senha redefinida com sucesso!")
+                        return nova_senha_hash
                     else:
-                        print(f"senha incorreta, vc tem mais {cont2} chances: ")
+                        print(f"❌ Código incorreto, você tem mais {cont2} chances.")
+                        cont2 -= 1
 
-
-
-
-                    cont2 -= 1
-           
-                print("Conta bloqueada temporariamente")
-                timer += 20
+                print("🚫 Conta bloqueada temporariamente.")
                 time.sleep(timer)
+                timer += 20
 
 def enviar_email(destinatario, assunto, corpo):
-    email_remetente = 'meu_fazendao@gmail.com'
-    senha = 'cytv hbkx rfac mnbw'  # Sua senha de app gerada no Google
+    email_remetente = 'meufazendao@gmail.com'
+    senha = 'wdfu pgrd ubqn tmaa'  # senha de app do Gmail
 
-
-    # Criar mensagem
     msg = EmailMessage()
     msg['Subject'] = assunto
     msg['From'] = email_remetente
     msg['To'] = destinatario
-    msg.set_content(corpo)  # Corpo em texto puro
+    msg.set_content(corpo)
 
-
-    # Enviar e-mail pelo servidor SMTP do Gmail
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
         smtp.login(email_remetente, senha)
         smtp.send_message(msg)
-        print("Email enviado com sucesso!")
+        print("📧 Email enviado com sucesso!")
 
-#função para verificar se há cadastro do usuario no banco
-def ver_cadas(email, tabela):      
-            existe = False
-            #procura no banco se os dados já existem
-            with open(f"{tabela}.txt", "r") as arquivo:
-                linhas = arquivo.readlines()
-                for linha in linhas:
-                    partes = linha.strip().split(" : ")
-                    if len(partes) == 3 and partes[1] == email:
-                        existe = True
-                        break
+def ver_cadas(email, tabela):
+    with open(f"{tabela}.txt", "r") as arquivo:
+        for linha in arquivo:
+            partes = linha.strip().split(" : ")
+            if len(partes) == 3 and partes[1].strip() == email.strip():
+                return True
+    return False
 
-            if existe: return True
-            else: return False
-              
+# Execução
+email = input('Por favor, digite seu email: ').strip()
 
-email = input('Por favor, Digite seu email: ')
 if not ver_cadas(email, tabela):
-    senha = input("Cadastre Sua Senha: ").encode()
-    senha = bcrypt.hashpw(senha, bcrypt.gensalt()).decode()
-    nome = input('Por favor, Digite seu nome completo: ')
+    senha = input("Cadastre sua senha: ").encode('utf-8')
+    senha_hash = bcrypt.hashpw(senha, bcrypt.gensalt()).decode('utf-8')
+    nome = input('Por favor, digite seu nome completo: ').strip()
 
     with open(f"{tabela}.txt", "a") as arquivo:
-            arquivo.write(f"{nome} : {email} : {senha}\n")
-    
-    usuario1 = Usuario(email, senha, nome)
+        arquivo.write(f"{nome} : {email} : {senha_hash}\n")
+
+    usuario1 = Usuario(email, senha_hash, nome)
+    print("✅ Usuário cadastrado com sucesso!")
 else:
-    print('email Já cadastrado\nLogin')
+    print('📥 Email já cadastrado. Faça login abaixo.')
     with open(f"{tabela}.txt", "r") as arquivo:
-        linhas = arquivo.readlines()
-        for linha in linhas:
+        for linha in arquivo:
             partes = linha.strip().split(" : ")
-            if len(partes) == 3 and partes[1] == email:
+            if len(partes) == 3 and partes[1].strip() == email.strip():
                 senha_correta = partes[2]
                 nome = partes[0]
     usuario1 = Usuario(email, senha_correta, nome)
