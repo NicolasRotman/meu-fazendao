@@ -15,6 +15,7 @@ if not os.path.exists(tabela):
 def home():
     return redirect(url_for('login'))
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -28,7 +29,7 @@ def login():
                     senha_correta = partes[2].encode('utf-8')
                     if bcrypt.checkpw(senha, senha_correta):
                         flash("✅ Login bem-sucedido!", "sucesso")
-                        return redirect(url_for("login"))
+                        return redirect(url_for("dashboard"))
                     else:
                         flash("❌ Senha incorreta!", "erro")
                         return redirect(url_for("login"))
@@ -37,6 +38,10 @@ def login():
         return redirect(url_for("cadastro"))
 
     return render_template("login.html")
+
+@app.route("/Login")
+def cadastro_pas():
+    return render_template('cadastro.html')
 
 @app.route("/cadastro", methods=["GET", "POST"])
 def cadastro():
@@ -62,6 +67,10 @@ def cadastro():
         return redirect(url_for("login"))
 
     return render_template("cadastro.html")
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
