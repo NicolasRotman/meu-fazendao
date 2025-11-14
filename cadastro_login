@@ -83,6 +83,16 @@ class Usuario:
                 time.sleep(timer)
                 timer += 20
 
+def perguntar(string, opções):
+    valido = False
+    while valido == False:
+        try:
+            resposta = int(input(string))
+            if resposta in opções:
+                valido = True
+                return resposta
+        except ValueError: continue
+        
 def enviar_email(destinatario, assunto, corpo):
     email_remetente = 'meufazendao@gmail.com'
     senha = 'wdfu pgrd ubqn tmaa'  # senha de app do Gmail
@@ -178,4 +188,12 @@ f'''
 '''
 )
 
-acao = int(input("Escolha uma opção: "))
+acao = perguntar('O que deseja fazer: ', [1,2,3,4,5,6])
+
+match acao:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6: 
