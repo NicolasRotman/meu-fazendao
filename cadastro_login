@@ -3,6 +3,7 @@ import time
 from email.message import EmailMessage
 import random
 import smtplib
+import datetime
 
 tabela = 'meu_fazendao'
 
@@ -128,3 +129,53 @@ else:
                 nome = partes[0]
     usuario1 = Usuario(email, senha_correta, nome)
     usuario1.verific_senha(senha_correta, email, tabela)
+
+print(
+f'''
+    ==============================================================
+                        🌱 MEU FAZENDÃO - PAINEL 🌱
+    ==============================================================
+
+    [ Usuário: {usuario1.get_nome()} ]        [ Data: {datetime.date.today()} ]
+
+    --------------------------------------------------------------
+                        📊 RESUMO FINANCEIRO
+    --------------------------------------------------------------
+    Saldo Atual:                      R$ {{saldo}}
+    Ganhos do Dia:                    R$ {{ganhos}}
+    Gastos do Dia:                    R$ {{gastos}}
+    --------------------------------------------------------------
+
+    --------------------------------------------------------------
+                        🚜 ATIVIDADES RECENTES
+    --------------------------------------------------------------
+    • Abastecimento do trator............. R$ {{custo_combustivel}}
+    • Compra de sementes (milho).......... R$ {{custo_sementes}}
+    • Venda de soja....................... R$ {{venda_soja}}
+    • Vencimento da ração dos animais..... R$ {{custo_racao}}
+    --------------------------------------------------------------
+
+    --------------------------------------------------------------
+                        📦 ESTOQUE ATUAL
+    --------------------------------------------------------------
+    - Milho:               {{milho}} sacas
+    - Soja:                {{soja}} sacas
+    - Ração:               {{racao}} kg
+    - Adubo:               {{adubo}} kg
+    --------------------------------------------------------------
+
+    --------------------------------------------------------------
+                        🔧 AÇÕES DISPONÍVEIS
+    --------------------------------------------------------------
+    [1] Plantar
+    [2] Colher
+    [3] Comprar insumos
+    [4] Vender produção
+    [5] Ver finanças
+    [6] Sair
+    --------------------------------------------------------------
+
+'''
+)
+
+acao = int(input("Escolha uma opção: "))
