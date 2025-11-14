@@ -3,7 +3,9 @@ import time
 from email.message import EmailMessage
 import random
 import smtplib
-import datetime 
+import datetime
+import readchar
+import os
 
 tabela = 'meu_fazendao'
 
@@ -83,15 +85,8 @@ class Usuario:
                 time.sleep(timer)
                 timer += 20
 
-def perguntar(string, opções):
-    valido = False
-    while valido == False:
-        try:
-            resposta = int(input(string))
-            if resposta in opções:
-                valido = True
-                return resposta
-        except ValueError: continue
+def limpar():
+    os.system('cls' if os.name == 'nt' else 'clear')               
         
 def enviar_email(destinatario, assunto, corpo):
     email_remetente = 'meufazendao@gmail.com'
@@ -140,60 +135,78 @@ else:
     usuario1 = Usuario(email, senha_correta, nome)
     usuario1.verific_senha(senha_correta, email, tabela)
 
-print(
-f'''
-    ==============================================================
-                        🌱 MEU FAZENDÃO - PAINEL 🌱
-    ==============================================================
+opcoes = ['plantar', 'colher', 'comprar insumos', 'vender produção', 'ver finanças', 'sair']
+selecionado = 0
 
-    [ Usuário: {usuario1.get_nome()} ]        [ Data: {datetime.date.today()} ]
+while True:
+    limpar()
+    print(
+    f'''
+        ==============================================================
+                            🌱 MEU FAZENDÃO - PAINEL 🌱
+        ==============================================================
 
-    --------------------------------------------------------------
-                        📊 RESUMO FINANCEIRO
-    --------------------------------------------------------------
-    Saldo Atual:                      R$ {{saldo}}
-    Ganhos do Dia:                    R$ {{ganhos}}
-    Gastos do Dia:                    R$ {{gastos}}
-    --------------------------------------------------------------
+        [ Usuário: {usuario1.get_nome()} ]        [ Data: {datetime.date.today()} ]
 
-    --------------------------------------------------------------
-                        🚜 ATIVIDADES RECENTES
-    --------------------------------------------------------------
-    • Abastecimento do trator............. R$ {{custo_combustivel}}
-    • Compra de sementes (milho).......... R$ {{custo_sementes}}
-    • Venda de soja....................... R$ {{venda_soja}}
-    • Vencimento da ração dos animais..... R$ {{custo_racao}}
-    --------------------------------------------------------------
+        --------------------------------------------------------------
+                            📊 RESUMO FINANCEIRO
+        --------------------------------------------------------------
+        Saldo Atual:                      R$ {{saldo}}
+        Ganhos do Dia:                    R$ {{ganhos}}
+        Gastos do Dia:                    R$ {{gastos}}
+        --------------------------------------------------------------
 
-    --------------------------------------------------------------
-                        📦 ESTOQUE ATUAL
-    --------------------------------------------------------------
-    - Milho:               {{milho}} sacas
-    - Soja:                {{soja}} sacas
-    - Ração:               {{racao}} kg
-    - Adubo:               {{adubo}} kg
-    --------------------------------------------------------------
+        --------------------------------------------------------------
+                            🚜 ATIVIDADES RECENTES
+        --------------------------------------------------------------
+        • Abastecimento do trator............. R$ {{custo_combustivel}}
+        • Compra de sementes (milho).......... R$ {{custo_sementes}}
+        • Venda de soja....................... R$ {{venda_soja}}
+        • Vencimento da ração dos animais..... R$ {{custo_racao}}
+        --------------------------------------------------------------
 
-    --------------------------------------------------------------
-                        🔧 AÇÕES DISPONÍVEIS
-    --------------------------------------------------------------
-    [1] Plantar
-    [2] Colher
-    [3] Comprar insumos
-    [4] Vender produção
-    [5] Ver finanças
-    [6] Sair
-    --------------------------------------------------------------
+        --------------------------------------------------------------
+                            📦 ESTOQUE ATUAL
+        --------------------------------------------------------------
+        - Milho:               {{milho}} sacas
+        - Soja:                {{soja}} sacas
+        - Ração:               {{racao}} kg
+        - Adubo:               {{adubo}} kg
+        --------------------------------------------------------------
 
-'''
-)
+        --------------------------------------------------------------
+                            🔧 AÇÕES DISPONÍVEIS
+        --------------------------------------------------------------
+        
+                Use ↑ ↓ para navegar e ENTER para selecionar:
 
-acao = perguntar('O que deseja fazer: ', [1,2,3,4,5,6])
+    '''
+    )
+    for i, opc in enumerate(opcoes):
+        if i == selecionado:
+            print(f"> {opc}")  
+        else:
+            print(f"  {opc}")
+    
+    print("--------------------------------------------------------------")
 
-match acao:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6: 
+    tecla = readchar.readkey()
+
+    if tecla == readchar.key.UP:
+        selecionado = (selecionado - 1) % len(opcoes)
+
+    elif tecla == readchar.key.DOWN:
+        selecionado = (selecionado + 1) % len(opcoes)
+
+    elif tecla == readchar.key.ENTER:
+        limpar()
+        escolha = opcoes[selecionado]
+        break
+
+match escolha:
+    case 'plantar':
+    case 'colher':
+    case 'comprar insumos':
+    case 'vender produção':
+    case 'ver finanças':
+    case 'sair': 
