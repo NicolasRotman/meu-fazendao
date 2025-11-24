@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Meu Fazendão - Harvest Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec49",
+                        "secundary":"#8b0000",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102215",
+                        "content-light": "#f8fcf9",
+                        "content-dark": "#1a2c1f",
+                        "text-light": "#0d1b11",
+                        "text-dark": "#e0f1e5",
+                        "subtle-light": "#4c9a5f",
+                        "subtle-dark": "#a2d8b0",
+                        "border-light": "#cfe7d5",
+                        "border-dark": "#2c4832",
+                        "primary-text": "#0d1b11",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 shrink-0 bg-background-light dark:bg-background-dark border-r border-surface-light dark:border-surface-dark/20 p-4 flex flex-col justify-between relative">
+            <div>
+                <div class="flex flex-col gap-6">
+                    <div class="flex items-center gap-3 px-2">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="FarmFlow logo with a green leaf" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDaPU_TaCX74M4e9lKS0oP0681Av1h4Dh3a6XRWvQFjRHK2TTWjlR6Kks3hmq5X0FXJduXwldWfEnShJ_rtKy3ysgIPIgw6uVet4XX4inibLEh9EKc7dYbJjMJf_5F4pmjsQOXIAS_xm-GMMwA16K-fxhvmIdU9QhEPXebvApRQASo12VCH78trXoMSOYWeatrltVxau1WJs0wY-t7_Fr29oJK36M1oPzTUZ97IHfb7ISuYVQNcl7sauDv3jFMcY5W68Qf_MvByPKx5");'></div>
+                        <div class="flex flex-col">
+                            <h1 class="text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-normal">Meu Fazendão</h1>
+                            <p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Management Suite</p>
+                        </div>
+                    </div>
+                    <nav class="flex flex-col gap-2">
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('dashboard') }}">
+                            <span class="material-symbols-outlined text-2xl">dashboard</span>
+                            <p class="text-sm font-medium leading-normal">Dashboard</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary" href="{{ url_for('expenses') }}">
+                            <span class="material-symbols-outlined text-2xl">receipt_long</span>
+                            <p class="text-sm font-medium leading-normal">Expenses</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('machinery') }}">
+                            <span class="material-symbols-outlined text-2xl">agriculture</span>
+                            <p class="text-sm font-medium leading-normal">Machinery</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('products') }}">
+                            <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                            <p class="text-sm font-medium leading-normal">Products</p>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT bg-primary/20 dark:bg-primary/30 text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('harvest') }}">
+                            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">grass</span>
+                            <p class="text-sm font-bold leading-normal">Harvests</p>
+                        </a>
+                    </nav>
+                </div>
+                <button class="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-background-light dark:bg-surface-dark border border-surface-light dark:border-surface-dark/20 rounded-full text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark focus:outline-none focus:ring-2 focus:ring-primary/50">
+                    <span class="material-symbols-outlined text-xl">chevron_left</span>
+                </button>
+            </div>
+            <div class="flex flex-col gap-2">
+                <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="">
+                    <span class="material-symbols-outlined text-2xl">help</span>
+                    <p class="text-sm font-medium leading-normal">Help</p>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="#">
+                    <span class="material-symbols-outlined text-2xl">settings</span>
+                    <p class="text-sm font-medium leading-normal">Settings</p>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 lg:p-8">
+            <div class="w-full max-w-7xl mx-auto">
+                <!-- Header with Button -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <h1 class="text-gray-900 dark:text-gray-100 text-4xl font-black leading-tight tracking-[-0.033em]">Harvest Tracking</h1>
+                    <button onclick="openModal()" 
+                            class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                        <span class="material-symbols-outlined">add</span>
+                        New Harvest
+                    </button>
+                </div>
+
+                <!-- Filter Buttons -->
+                <div class="flex gap-3 mb-6 flex-wrap">
+                    <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/20 px-3">
+                        <p class="text-primary text-sm font-medium leading-normal">All</p>
+                    </button>
+                    <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 px-3 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Active</p>
+                    </button>
+                    <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 px-3 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Completed</p>
+                    </button>
+                    <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 pl-3 pr-2 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">By Crop Type</p>
+                        <span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+                    </button>
+                </div>
+
+                <!-- Harvest Cards Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
+                    {% for e in harvest %}
+                    <div class="flex flex-col rounded-xl shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover" style='background-image: url("{{ e.url_photo }}");'></div>
+                        <div class="flex w-full grow flex-col gap-4 p-4">
+                            <div class="flex items-start justify-between">
+                                <p class="text-gray-900 dark:text-gray-100 text-lg font-bold leading-tight tracking-[-0.015em]">{{ e.crop_name }}</p>
+                                <span class="text-sm font-medium leading-normal rounded-full px-3 py-1 text-green-800 bg-green-200 dark:text-green-200 dark:bg-green-800/50">{{e.status}}</span>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <div class="flex justify-between">
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-normal">Progress</p>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">{{ e.porcentagem }}%</p>
+                                </div>
+                                <div class="w-full rounded-full bg-gray-200 dark:bg-gray-700 h-2">
+                                    <div class="h-2 rounded-full bg-[#2ECC71]" style="width: {{ e.porcentagem }}%;"></div>
+                                </div>
+                            </div>
+                            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 flex items-end gap-3 justify-between">
+                                <div class="flex flex-col gap-1">
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm font-normal leading-normal">Projected Yield: {{ e.estimated_yield }} {{ e.unit }}</p>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm font-normal leading-normal">Total Costs: R$ {{ e.cost }}</p>
+                                </div>
+                                <form action="/deletar_expense" method="POST">
+                                <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-primary/20 text-secundary text-sm font-medium leading-normal hover:bg-primary/30 transition-colors">
+                                        <input type="hidden" name="id" value="{{ e.id }}">
+                                    <span class="truncate">Excluir</span>
+                                </button>
+                                </form>
+
+                                <button onclick="openEditHarvestModal('{{ e.id }}', '{{ e.crop_name }}', '{{ e.planting_date }}', '{{ e.harvest_date }}', '{{ e.estimated_yield }}', '{{ e.unit }}', '{{ e.cost }}')" 
+                                        class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-primary/20 text-primary text-sm font-medium leading-normal hover:bg-primary/30 transition-colors">
+                                    <span class="truncate">Editar</span>
+                                </button>
+
+                                <button onclick="openHarvestDetailsModal('{{ e.id }}', '{{ e.crop_name }}', '{{ e.planting_date }}', '{{ e.harvest_date }}', '{{ e.estimated_yield }}', '{{ e.unit }}', '{{ e.cost }}')" 
+                                        class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-primary/20 text-primary text-sm font-medium leading-normal hover:bg-primary/30 transition-colors">
+                                    <span class="truncate">Detalhes</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL PARA CRIAR NOVA COLHEITA -->
+    <div id="harvestModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
+        
+        <div class="relative bg-background-light dark:bg-background-dark w-full max-w-lg rounded-xl shadow-lg flex flex-col">
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Create New Harvest</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Fill in the details below to add a new harvest entry.</p>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 max-h-[70vh] overflow-y-auto">
+                <form id="createHarvestForm" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
+                    <!-- Crop Name -->
+                    <label class="flex flex-col sm:col-span-2">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Crop Name</p>
+                        <input name="crop_name" class="form-input rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 px-3" placeholder="e.g., Soybeans" required />
+                    </label>
+
+                    <!-- Planting Date -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Planting Date</p>
+                        <div class="relative">
+                            <input name="planting_date" type="date" class="form-input w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 pl-10" required />
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">calendar_today</span>
+                        </div>
+                    </label>
+
+                    <!-- Expected Harvest Date -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Expected Harvest Date</p>
+                        <div class="relative">
+                            <input name="harvest_date" type="date" class="form-input w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 pl-10" required />
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">calendar_today</span>
+                        </div>
+                    </label>
+
+                    <!-- Estimated Yield -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Estimated Yield</p>
+                        <input name="estimated_yield" type="number" step="0.01" class="form-input rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 px-3" placeholder="e.g., 500" required />
+                    </label>
+
+                    <!-- Unit of Yield -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Unit of Yield</p>
+                        <div class="relative">
+                            <select name="unit" class="form-select rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 px-3" required>
+                                <option value="">Select unit</option>
+                                <option value="tons">Tons</option>
+                                <option value="bushels">Bushels</option>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="lbs">Pounds (lbs)</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">expand_more</span>
+                        </div>
+                    </label>
+
+                    <!-- Initial Costs -->
+                    <label class="flex flex-col sm:col-span-2">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Initial Costs (Optional)</p>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                            <input name="cost" type="number" step="0.01" class="form-input w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 pl-8" placeholder="1000.00" />
+                        </div>
+                    </label>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-4 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                    Cancel
+                </button>
+                <button type="submit" form="createHarvestForm" class="px-4 h-10 rounded-lg bg-primary text-white hover:bg-primary/90">
+                    Create Harvest
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA EDITAR COLHEITA -->
+    <div id="editHarvestModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditHarvestModal()"></div>
+        
+        <div class="relative bg-background-light dark:bg-background-dark w-full max-w-lg rounded-xl shadow-lg flex flex-col">
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Editar Plantação</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Atualize as informações da plantação abaixo.</p>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 max-h-[70vh] overflow-y-auto">
+                <form id="editHarvestForm" method="POST" action="/edit_harvest" class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
+                    <!-- Hidden field para ID -->
+                    <input type="hidden" id="editHarvestId" name="id">
+                    
+                    <!-- Crop Name -->
+                    <label class="flex flex-col sm:col-span-2">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Crop Name</p>
+                        <input id="editCropName" name="crop_name" class="form-input rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 px-3" required />
+                    </label>
+
+                    <!-- Planting Date -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Planting Date</p>
+                        <div class="relative">
+                            <input id="editPlantingDate" name="planting_date" type="date" class="form-input w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 pl-10" required />
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">calendar_today</span>
+                        </div>
+                    </label>
+
+                    <!-- Harvest Date -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Harvest Date</p>
+                        <div class="relative">
+                            <input id="editHarvestDate" name="harvest_date" type="date" class="form-input w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 pl-10" required />
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">calendar_today</span>
+                        </div>
+                    </label>
+
+                    <!-- Estimated Yield -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Estimated Yield</p>
+                        <input id="editEstimatedYield" name="estimated_yield" type="number" step="0.01" class="form-input rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 px-3" required />
+                    </label>
+
+                    <!-- Unit -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Unit</p>
+                        <div class="relative">
+                            <select id="editUnit" name="unit" class="form-select rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 px-3" required>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="tons">Tons</option>
+                                <option value="bushels">Bushels</option>
+                                <option value="lbs">Pounds (lbs)</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">expand_more</span>
+                        </div>
+                    </label>
+
+                    <!-- Cost -->
+                    <label class="flex flex-col sm:col-span-2">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 pb-2">Cost</p>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                            <input id="editCost" name="cost" type="number" step="0.01" class="form-input w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark h-12 pl-8" />
+                        </div>
+                    </label>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+                <button onclick="closeEditHarvestModal()" class="px-4 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                    Cancel
+                </button>
+                <button type="submit" form="editHarvestForm" class="px-4 h-10 rounded-lg bg-primary text-white hover:bg-primary/90">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Harvest Details Modal -->
+<div id="harvestDetailsModal"
+     class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+
+  <!-- Modal Container -->
+  <div class="relative w-full max-w-lg rounded-xl bg-background-light dark:bg-background-dark shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-white/10">
+      <p class="text-xl font-bold text-gray-900 dark:text-white">Harvest Details</p>
+
+      <button onclick="closeHarvestDetailsModal()"
+        class="flex h-8 w-8 items-center justify-center rounded-lg bg-background-light hover:bg-gray-100 dark:bg-background-dark dark:hover:bg-white/10">
+        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">close</span>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="p-4 sm:p-6">
+      <div class="grid grid-cols-[35%_1fr] gap-x-4 sm:grid-cols-[30%_1fr]">
+
+        <div class="col-span-2 grid grid-cols-subgrid border-b border-gray-200 py-4 dark:border-white/10">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Crop Name</p>
+          <p class="text-sm text-gray-900 dark:text-white" id="modalCropName">Heirloom Tomatoes</p>
+        </div>
+
+        <div class="col-span-2 grid grid-cols-subgrid border-b border-gray-200 py-4 dark:border-white/10">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Planting Date</p>
+          <p class="text-sm text-gray-900 dark:text-white" id="modalPlantingDate">May 12, 2024</p>
+        </div>
+
+        <div class="col-span-2 grid grid-cols-subgrid border-b border-gray-200 py-4 dark:border-white/10">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Expected Harvest Date</p>
+          <p class="text-sm text-gray-900 dark:text-white" id="modalExpectedHarvest">August 25, 2024</p>
+        </div>
+
+        <div class="col-span-2 grid grid-cols-subgrid border-b border-gray-200 py-4 dark:border-white/10">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Estimated Yield</p>
+          <p class="text-sm text-gray-900 dark:text-white" id="modalYield">500</p>
+        </div>
+
+        <div class="col-span-2 grid grid-cols-subgrid border-b border-gray-200 py-4 dark:border-white/10">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Unit of Yield</p>
+          <p class="text-sm text-gray-900 dark:text-white" id="modalUnit">Kilograms</p>
+        </div>
+
+        <div class="col-span-2 grid grid-cols-subgrid py-4">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Initial Costs</p>
+          <p class="text-sm text-gray-900 dark:text-white" id="modalCost">$2,500</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end border-t border-gray-200 p-4 sm:p-6 dark:border-white/10">
+      <button onclick="closeHarvestDetailsModal()"
+        class="flex min-w-[84px] items-center justify-center rounded-lg h-10 px-5 bg-primary text-background-dark text-sm font-bold hover:bg-opacity-90">
+        <span>Done</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal JS -->
+<script>
+  function openHarvestDetailsModal(
+    crop,
+    planting,
+    expected,
+    yieldVal,
+    unit,
+    cost
+  ) {
+    document.getElementById("modalCropName").textContent = crop;
+    document.getElementById("modalPlantingDate").textContent = planting;
+    document.getElementById("modalExpectedHarvest").textContent = expected;
+    document.getElementById("modalYield").textContent = yieldVal;
+    document.getElementById("modalUnit").textContent = unit;
+    document.getElementById("modalCost").textContent = cost;
+
+    document.getElementById("harvestDetailsModal").classList.remove("hidden");
+  }
+
+  function closeHarvestDetailsModal() {
+    document.getElementById("harvestDetailsModal").classList.add("hidden");
+  }
+</script>
+
+
+    <script>
+        // Funções para o modal de criação
+        function openModal() {
+            document.getElementById("harvestModal").classList.remove("hidden");
+            document.getElementById("harvestModal").classList.add("flex");
+        }
+
+        function closeModal() {
+            document.getElementById("harvestModal").classList.add("hidden");
+            document.getElementById("harvestModal").classList.remove("flex");
+        }
+
+        // Funções para o modal de edição
+        function openEditHarvestModal(id, crop_name, planting_date, harvest_date, estimated_yield, unit, cost) {
+            // Preenche os campos do formulário
+            document.getElementById("editHarvestId").value = id;
+            document.getElementById("editCropName").value = crop_name;
+            document.getElementById("editPlantingDate").value = planting_date;
+            document.getElementById("editHarvestDate").value = harvest_date;
+            document.getElementById("editEstimatedYield").value = estimated_yield;
+            document.getElementById("editUnit").value = unit;
+            document.getElementById("editCost").value = cost;
+
+            // Mostra o modal
+            document.getElementById("editHarvestModal").classList.remove("hidden");
+            document.getElementById("editHarvestModal").classList.add("flex");
+        }
+
+        function closeEditHarvestModal() {
+            document.getElementById("editHarvestModal").classList.add("hidden");
+            document.getElementById("editHarvestModal").classList.remove("flex");
+        }
+
+        // Fechar modais com ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                closeEditHarvestModal();
+            }
+        });
+    </script>
+</body>
+</html>

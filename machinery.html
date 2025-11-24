@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meu Fazendão - Expense Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec49",
+                        "secundary": "#8b0000",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102215",
+                        "content-light": "#f8fcf9",
+                        "content-dark": "#1a2c1f",
+                        "text-light": "#0d1b11",
+                        "text-dark": "#e0f1e5",
+                        "subtle-light": "#4c9a5f",
+                        "subtle-dark": "#a2d8b0",
+                        "border-light": "#cfe7d5",
+                        "border-dark": "#2c4832",
+                        "primary-text": "#0d1b11",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex min-h-screen">
+<aside class="w-64 shrink-0 bg-background-light dark:bg-background-dark border-r border-surface-light dark:border-surface-dark/20 p-4 flex flex-col justify-between relative">
+<div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="FarmFlow logo with a green leaf" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDaPU_TaCX74M4e9lKS0oP0681Av1h4Dh3a6XRWvQFjRHK2TTWjlR6Kks3hmq5X0FXJduXwldWfEnShJ_rtKy3ysgIPIgw6uVet4XX4inibLEh9EKc7dYbJjMJf_5F4pmjsQOXIAS_xm-GMMwA16K-fxhvmIdU9QhEPXebvApRQASo12VCH78trXoMSOYWeatrltVxau1WJs0wY-t7_Fr29oJK36M1oPzTUZ97IHfb7ISuYVQNcl7sauDv3jFMcY5W68Qf_MvByPKx5");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-normal">Meu Fazendão</h1>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Management Suite</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('dashboard') }}">
+<span class="material-symbols-outlined text-2xl">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary" href="{{ url_for('expenses') }}">
+<span class="material-symbols-outlined text-2xl">receipt_long</span>
+<p class="text-sm font-medium leading-normal">Expenses</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT bg-primary/20 dark:bg-primary/30 text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('machinery') }}">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">agriculture</span>
+<p class="text-sm font-bold leading-normal">Machinery</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('products') }}">
+<span class="material-symbols-outlined text-2xl">inventory_2</span>
+<p class="text-sm font-medium leading-normal">Products</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('harvest') }}">
+<span class="material-symbols-outlined text-2xl">grass</span>
+<p class="text-sm font-medium leading-normal">Harvests</p>
+</a>
+</nav>
+</div>
+<button class="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-background-light dark:bg-surface-dark border border-surface-light dark:border-surface-dark/20 rounded-full text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="material-symbols-outlined text-xl">chevron_left</span>
+</button>
+</div>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="#">
+<span class="material-symbols-outlined text-2xl">help</span>
+<p class="text-sm font-medium leading-normal">Help</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="#">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</div>
+</aside>
+<main class="flex-1 p-8">
+<div class="flex flex-col gap-6">
+<header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<h1 class="text-text-light-primary dark:text-text-dark-primary text-4xl font-black leading-tight tracking-[-0.033em]">Fleet Management</h1>
+<button onclick="openMachineModal()" class="flex h-10 items-center rounded-lg bg-primary px-4 text-white">
+  Add Machine
+</button>
+</header>
+<div class="flex flex-col md:flex-row gap-4">
+<div class="flex-grow">
+<label class="flex flex-col h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-gray-500 dark:text-gray-400 flex border border-r-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-gray-800 dark:text-gray-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 h-full placeholder:text-gray-400 dark:placeholder:text-gray-500 px-4 text-base font-normal leading-normal" placeholder="Search by name or ID..."/>
+</div>
+</label>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex h-12 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 pl-4 pr-3 hover:bg-gray-50 dark:hover:bg-gray-700">
+<p class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-normal">Status</p>
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400" style="font-size:20px;">expand_more</span>
+</button>
+<button class="flex h-12 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 pl-4 pr-3 hover:bg-gray-50 dark:hover:bg-gray-700">
+<p class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-normal">Type</p>
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400" style="font-size:20px;">expand_more</span>
+</button>
+</div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  {% for e in machines %}
+    <div class="flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
+
+      <div class="bg-center bg-no-repeat aspect-video bg-cover"
+        style="background-image: url('{{ e.img_url }}');">
+      </div>
+
+      <div class="p-4 flex flex-col gap-4 flex-grow">
+        <div class="flex justify-between items-start">
+          <h3 class="font-bold text-lg text-gray-800 dark:text-white">{{ e.name }}</h3>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">{{e.status}}</span>
+        </div>
+
+        <div class="mt-auto pt-4 flex gap-3">
+                                <button onclick="openEditModal('{{ e.id }}', '{{ e.name }}', '{{ e.valor }}', '{{ e.status }}', '{{ e.data }}', '{{ e.type }}', '{{ e.serial }}')" 
+                                        class="flex-1 h-9 px-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">
+                                    editar
+                                </button>
+                                
+                                <!-- BOTÃO DETALHES CORRIGIDO -->
+                                <button onclick="openDetailsModal('{{ e.id }}', '{{ e.name }}', '{{ e.valor }}', '{{ e.status }}', '{{ e.data }}', '{{ e.type }}', '{{ e.serial }}')" 
+                                        class="flex-1 h-9 px-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">
+                                    detalhes
+                                </button>
+                                
+                                <form action="/deletar_machine" method="POST">
+                                    <input type="hidden" name="id" value="{{ e.id }}">
+                                    <button class="flex-1 h-9 px-2 rounded-lg bg-primary/20 text-secundary text-sm font-semibold hover:bg-primary/30">excluir</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+<div class="hidden flex-col items-center justify-center text-center py-20 px-6 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700">
+<span class="material-symbols-outlined text-5xl text-gray-400 dark:text-gray-500 mb-4">search_off</span>
+<h2 class="text-xl font-bold text-gray-800 dark:text-white">No Machinery Found</h2>
+<p class="mt-2 text-gray-600 dark:text-gray-400">Try adjusting your search or filter to find what you're looking for.</p>
+<button class="mt-6 flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-white text-sm font-bold tracking-wide hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+<span class="material-symbols-outlined" style="font-size:20px;">add</span>
+<span>Add First Machine</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+
+<!-- Overlay (fundo escuro) -->
+<form method="POST">
+<div id="modal-overlay" class="hidden fixed inset-0 bg-black/50 z-40"></div>
+
+<!-- Modal -->
+<div id="modal-machine" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+
+  <!-- CONTAINER SCROLLABLE -->
+  <div class="relative w-full max-w-lg max-h-screen overflow-y-auto rounded-xl bg-background-light dark:bg-background-dark shadow-xl">
+
+
+    <div class="p-8">
+      <h2 class="text-2xl font-bold text-text-light dark:text-text-dark">Add New Machine</h2>
+
+      <div class="mt-6 grid grid-cols-1 gap-6">
+        <label class="flex flex-col">
+          <p class="pb-2 text-sm font-medium text-text-light dark:text-text-dark">Machine Name</p>
+          <input
+            name="machine_name" class="form-input h-12 w-full rounded-lg bg-background-light p-3 text-base text-text-light dark:bg-background-dark dark:text-text-dark"
+            placeholder="Enter machine name" type="text"/>
+        </label>
+
+        <label class="flex flex-col">
+          <p name='categoria' class="pb-2 text-sm font-medium text-text-light dark:text-text-dark">Type</p>
+          <select
+            class="form-input h-12 w-full rounded-lg bg-background-light p-3 dark:bg-background-dark dark:text-text-dark">
+            <option value="">Select type</option>
+            <option value="tractor">Tractor</option>
+            <option value="harvester">Harvester</option>
+            <option value="seeder">Seeder</option>
+            <option value="sprayer">Sprayer</option>
+          </select>
+        </label>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <label class="flex flex-col">
+            <p class="pb-2 text-sm font-medium text-text-light dark:text-text-dark">Purchase Date</p>
+            <input
+              name='date' class="form-input h-12 w-full rounded-lg bg-background-light p-3 dark:bg-background-dark dark:text-text-dark"
+              type="date"/>
+          </label>
+
+          <label class="flex flex-col">
+            <p class="pb-2 text-sm font-medium text-text-light dark:text-text-dark">Cost</p>
+            <div class="relative flex w-full items-stretch">
+              <span class="flex items-center justify-center rounded-l-lg border px-3 bg-gray-100 dark:bg-gray-700 dark:text-gray-300">$</span>
+              <input
+                name="valor" class="form-input h-12 w-full rounded-r-lg bg-background-light p-3 dark:bg-background-dark dark:text-text-dark"
+                type="number" placeholder="0.00"/>
+            </div>
+          </label>
+        </div>
+
+        <label class="flex flex-col">
+          <div class="flex justify-between pb-2">
+            <p class="text-sm font-medium text-text-light dark:text-text-dark">Serial Number</p>
+            <span class="text-xs text-gray-500">Optional</span>
+          </div>
+          <input
+            name="machine_id" class="form-input h-12 w-full rounded-lg bg-background-light p-3 dark:bg-background-dark dark:text-text-dark"
+            type="text" placeholder="Enter serial number"/>
+        </label>
+      </div>
+
+      <div class="mt-8 flex flex-col-reverse gap-4 sm:flex-row sm:justify-end">
+        <button onclick="closeMachineModal()" class="flex h-11 items-center justify-center rounded-lg border px-6">
+          Cancel
+        </button>
+
+        <button class="flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-white hover:bg-primary/90">
+          Add Machine
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</form>
+
+<!-- Edit Machinery Modal -->
+<div id="editMachineModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 p-4">
+    <div class="relative flex w-full max-w-2xl flex-col rounded-xl bg-background-light dark:bg-background-dark shadow-2xl">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 p-4">
+            <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100">Edit Machinery</h3>
+            <button type="button" onclick="closeEditModal()"
+                class="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+
+        <form id="editMachineForm" method="POST" action="/edit_machine">
+            <!-- Content -->
+            <div class="flex flex-col gap-6 p-6 md:flex-row">
+                <div class="flex flex-1 flex-col gap-4">
+                    <input type="hidden" id="editMachineID" name="id">
+
+                    <div class="flex flex-col gap-4 sm:flex-row sm:gap-4">
+                        <label class="flex flex-col flex-1">
+                            <p class="pb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">Machine Name</p>
+                            <input id="editMachineName" name="name"
+                                class="form-input h-11 w-full rounded-lg border border-zinc-300 bg-background-light p-3 text-sm dark:border-zinc-600 dark:bg-background-dark dark:text-zinc-100" />
+                        </label>
+
+                        <label class="flex flex-col sm:w-2/5">
+                            <p class="pb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">Type</p>
+                            <select id="editMachineType" name="type"
+                                class="form-select h-11 w-full rounded-lg border border-zinc-300 bg-background-light p-3 text-sm dark:border-zinc-600 dark:bg-background-dark dark:text-zinc-100">
+                                <option value="tractor">Tractor</option>
+                                <option value="harvester">Harvester</option>
+                                <option value="seeder">Seeder</option>
+                                <option value="sprayer">Sprayer</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <!-- NOVO CAMPO: STATUS -->
+                    <div class="flex flex-col gap-4 sm:flex-row sm:gap-4">
+                        <label class="flex flex-col flex-1">
+                            <p class="pb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">Status</p>
+                            <select id="editMachineStatus" name="status"
+                                class="form-select h-11 w-full rounded-lg border border-zinc-300 bg-background-light p-3 text-sm dark:border-zinc-600 dark:bg-background-dark dark:text-zinc-100">
+                                <option value="active">Active</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="repair">Under Repair</option>
+                                <option value="sold">Sold</option>
+                            </select>
+                        </label>
+
+                        <label class="flex flex-col flex-1">
+                            <p class="pb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">Purchase Date</p>
+                            <input id="editMachineDate" name="purchase_date" type="date"
+                                class="form-input h-11 w-full rounded-lg border border-zinc-300 bg-background-light p-3 text-sm dark:border-zinc-600 dark:bg-background-dark dark:text-zinc-100" />
+                        </label>
+                    </div>
+
+                    <div class="flex flex-col gap-4 sm:flex-row sm:gap-4">
+                        <label class="flex flex-col flex-1">
+                            <p class="pb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">Cost ($)</p>
+                            <input id="editMachineCost" name="cost"
+                                class="form-input h-11 w-full rounded-lg border border-zinc-300 bg-background-light p-3 text-sm dark:border-zinc-600 dark:bg-background-dark dark:text-zinc-100" />
+                        </label>
+
+                        <label class="flex flex-col flex-1">
+                            <p class="pb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">Serial Number</p>
+                            <input id="editMachineSerial" name="serial"
+                                class="form-input h-11 w-full rounded-lg border border-zinc-300 bg-background-light p-3 text-sm dark:border-zinc-600 dark:bg-background-dark dark:text-zinc-100" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end gap-3 border-t border-zinc-200 dark:border-zinc-700 p-4">
+                <button type="button" onclick="closeEditModal()"
+                    class="rounded-lg h-10 px-4 bg-transparent text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="rounded-lg h-10 px-4 bg-primary text-zinc-900 hover:bg-opacity-80">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Machinery Modal -->
+<div id="DetailsMachineModal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 p-4">
+
+    <div class="relative flex w-full max-w-2xl flex-col rounded-xl bg-background-light dark:bg-background-dark shadow-2xl">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 p-4">
+            <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100">Detalhes da máquina</h3>
+
+            <button type="button" onclick="closeDetailsModal()"
+                class="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="flex flex-col gap-6 p-6 md:flex-row">
+
+            <div class="flex flex-1 flex-col gap-4">
+
+                <input type="hidden" id="detailMachineID">
+
+                <!-- Name + Type -->
+                <div class="flex flex-col gap-4 sm:flex-row sm:gap-4">
+
+                    <label class="flex flex-col flex-1">
+                        <p class="pb-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">Machine Name</p>
+                        <p id="detailMachineName"
+                           class="rounded-lg border border-zinc-300 bg-background-light dark:border-zinc-600 dark:bg-background-dark p-3 text-sm text-zinc-900 dark:text-zinc-100">
+                        </p>
+                    </label>
+
+                    <label class="flex flex-col sm:w-2/5">
+                        <p class="pb-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">Type</p>
+                        <p id="detailMachineType"
+                           class="rounded-lg border border-zinc-300 bg-background-light dark:border-zinc-600 dark:bg-background-dark p-3 text-sm text-zinc-900 dark:text-zinc-100">
+                        </p>
+                    </label>
+                </div>
+
+                <!-- Date + Cost -->
+                <div class="flex flex-col gap-4 sm:flex-row sm:gap-4">
+
+                    <label class="flex flex-col flex-1">
+                        <p class="pb-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">Purchase Date</p>
+                        <p id="detailMachineDate"
+                           class="rounded-lg border border-zinc-300 bg-background-light dark:border-zinc-600 dark:bg-background-dark p-3 text-sm text-zinc-900 dark:text-zinc-100">
+                        </p>
+                    </label>
+
+                    <label class="flex flex-col flex-1">
+                        <p class="pb-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">Cost ($)</p>
+                        <p id="detailMachineCost"
+                           class="rounded-lg border border-zinc-300 bg-background-light dark:border-zinc-600 dark:bg-background-dark p-3 text-sm text-zinc-900 dark:text-zinc-100">
+                        </p>
+                    </label>
+
+                    <label class="flex flex-col">
+                        <p class="pb-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">Status</p>
+                        <p id="detailMachineStatus"
+                          class="rounded-lg border border-zinc-300 bg-background-light dark:border-zinc-600 dark:bg-background-dark p-3 text-sm text-zinc-900 dark:text-zinc-100">
+                        </p>
+                    </label>
+                </div>
+
+                <!-- Serial -->
+                <label class="flex flex-col">
+                    <p class="pb-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">Serial Number</p>
+                    <p id="detailMachineSerial"
+                       class="rounded-lg border border-zinc-300 bg-background-light dark:border-zinc-600 dark:bg-background-dark p-3 text-sm text-zinc-900 dark:text-zinc-100">
+                    </p>
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    // ========== MODAL ADD MACHINE ==========
+    function openMachineModal() {
+        document.getElementById("modal-overlay").classList.remove("hidden");
+        document.getElementById("modal-machine").classList.remove("hidden");
+    }
+
+    function closeMachineModal() {
+        document.getElementById("modal-overlay").classList.add("hidden");
+        document.getElementById("modal-machine").classList.add("hidden");
+    }
+
+    // ========== MODAL EDIT MACHINE ==========
+    function openEditModal(id, name, cost, status, date, type, serial) {
+        console.log("Abrindo edição:", {id, name, cost, status, date, type, serial});
+        
+        // Preencher os campos do formulário
+        document.getElementById("editMachineID").value = id || '';
+        document.getElementById("editMachineName").value = name || '';
+        document.getElementById("editMachineCost").value = cost || '';
+        document.getElementById("editMachineDate").value = date || '';
+        document.getElementById("editMachineSerial").value = serial || '';
+        
+        // Selecionar o tipo correto no dropdown
+        if (type) {
+            const typeSelect = document.getElementById("editMachineType");
+            for (let i = 0; i < typeSelect.options.length; i++) {
+                if (typeSelect.options[i].value === type) {
+                    typeSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        // Mostrar o modal
+        document.getElementById("editMachineModal").classList.remove("hidden");
+    }
+
+    function closeEditModal() {
+        document.getElementById("editMachineModal").classList.add("hidden");
+    }
+
+    // ========== MODAL DETAILS MACHINE ==========
+    function openDetailsModal(id, name, cost, status, date, type, serial) {
+        console.log("Abrindo detalhes:", {id, name, cost, status, date, type, serial});
+        
+        // Preencher os campos de detalhes
+        document.getElementById("detailMachineID").value = id || '';
+        document.getElementById("detailMachineName").textContent = name || 'N/A';
+        document.getElementById("detailMachineCost").textContent = cost ? '$' + cost : 'N/A';
+        document.getElementById("detailMachineDate").textContent = date || 'N/A';
+        document.getElementById("detailMachineType").textContent = type || 'N/A';
+        document.getElementById("detailMachineSerial").textContent = serial || 'N/A';
+        document.getElementById("detailMachineStatus").textContent = status || 'N/A';
+        
+        // Mostrar o modal
+        document.getElementById("DetailsMachineModal").classList.remove("hidden");
+    }
+
+    function closeDetailsModal() {
+        document.getElementById("DetailsMachineModal").classList.add("hidden");
+    }
+
+    // ========== EVENT LISTENERS PARA FECHAR MODAIS ==========
+    document.addEventListener('click', function(event) {
+        // Fechar modal Add Machine clicando no overlay
+        if (event.target.id === 'modal-overlay') {
+            closeMachineModal();
+        }
+        
+        // Fechar modal Edit Machine clicando fora do conteúdo
+        if (event.target.id === 'editMachineModal') {
+            closeEditModal();
+        }
+        
+        // Fechar modal Details clicando fora do conteúdo
+        if (event.target.id === 'DetailsMachineModal') {
+            closeDetailsModal();
+        }
+    });
+
+    // Fechar modais com ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeMachineModal();
+            closeEditModal();
+            closeDetailsModal();
+        }
+    });
+</script>
+
+</body></html>

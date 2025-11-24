@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meu Fazendão - Cadastro</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#4CAF50",
+            "background-light": "#F7F9FC",
+            "background-dark": "#1a1d1a",
+            "card-light": "#ffffff",
+            "card-dark": "#2c2f2c",
+            "text-light": "#333333",
+            "text-dark": "#e0e0e0",
+            "subtle-light": "#666666",
+            "subtle-dark": "#a0a0a0",
+            "border-light": "#e0e0e0",
+            "border-dark": "#444444",
+          },
+          fontFamily: { "display": ["Inter", "sans-serif"] }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="font-display">
+
+<div class="absolute inset-0 z-0 opacity-50 dark:opacity-5">
+<img class="h-full w-full object-cover" data-alt="Faint, out-of-focus background image of a farm landscape at sunrise" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_0KNeC3zyEUNQuI-WqeMrvVFzAWOzLu2y21Nx9Q4_PSYLudd6cDkOVg2FnO0I5xTFbvQyFoNzo1mCrHLTHPN7AhLn2JO15hW8zc60q86F7w6H8Pjm5mOPoCz0BZc3xbzyZ_RnzyeI0y4aafnHjaFx-GihW4kbJw8D8cW0fiWcYJjHt6vkRXAqQ8SgROjjoUUS6QasMrseyW96fh7G08_kYm5leA140hMKRUmxME2paEWSHE1whc9kIwKboRdOwW_z34PNbH8GbGxp"/>
+</div>
+
+  <div class="relative flex h-full min-h-screen grow flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="flex flex-col items-center gap-6 w-full max-w-md">
+      
+      <!-- Título fora da caixa branca -->
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary text-4xl">eco</span>
+        <span class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">Meu Fazendão</span>
+      </div>
+
+      <!-- Caixa branca do formulário -->
+      <form method="POST" action="/cadastro" class="w-full rounded-xl bg-card-light dark:bg-card-dark p-6 sm:p-8 shadow-lg border border-border-light/50 dark:border-border-dark/50 flex flex-col gap-6">
+        
+        <div class="text-center">
+          <p class="text-text-light dark:text-text-dark text-2xl sm:text-3xl font-bold">Crie sua conta!</p>
+          <p class="text-subtle-light dark:text-subtle-dark text-sm sm:text-base">Preencha os dados abaixo para começar sua fazenda.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="text-center text-sm {% if category == 'sucesso' %}text-green-600{% else %}text-red-600{% endif %}">
+                {{ msg }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="flex flex-col gap-4">
+          <label class="flex flex-col w-full">
+            <p class="text-text-light dark:text-text-dark text-sm font-medium pb-2">Nome completo</p>
+            <input name="nome" required type="text" placeholder="Seu nome" class="form-input rounded-lg border border-border-light dark:border-border-dark h-12 px-4" />
+          </label>
+
+          <label class="flex flex-col w-full">
+            <p class="text-text-light dark:text-text-dark text-sm font-medium pb-2">Email</p>
+            <input name="email" required type="email" placeholder="you@example.com" class="form-input rounded-lg border border-border-light dark:border-border-dark h-12 px-4" />
+          </label>
+
+          <label class="flex flex-col w-full">
+            <p class="text-text-light dark:text-text-dark text-sm font-medium pb-2">Senha</p>
+            <div class="relative">
+              <input id="senha" name="senha" required type="password" placeholder="Crie uma senha" class="form-input rounded-lg border border-border-light dark:border-border-dark h-12 px-4 w-full" />
+              <button type="button" id="toggleSenha" class="absolute inset-y-0 right-0 pr-4 flex items-center text-subtle-light dark:text-subtle-dark">
+                <span class="material-symbols-outlined" id="iconeSenha">visibility</span>
+              </button>
+            </div>
+          </label>
+        </div>
+
+        <button type="submit" class="flex items-center justify-center w-full h-12 bg-primary text-white rounded-lg text-base font-semibold hover:bg-primary/90 transition">Cadastrar</button>
+
+        <div style="text-align: center;">
+          Já tem conta?
+          <a href="{{ url_for('login') }}" class="text-sm font-medium text-primary hover:underline">
+            Entrar
+          </a>
+        </div>
+
+      </form>
+
+      <p class="text-center text-xs text-subtle-light dark:text-subtle-dark mt-4">
+        Ao criar uma conta, você concorda com nossos
+        <a class="font-medium text-primary hover:underline" href="#">Termos de serviço</a> &
+        <a class="font-medium text-primary hover:underline" href="#">Política de privacidade</a>.
+      </p>
+
+    </div>
+  </div>
+
+<script>
+  const toggleSenha = document.getElementById("toggleSenha");
+  const campoSenha = document.getElementById("senha");
+  const iconeSenha = document.getElementById("iconeSenha");
+  if (toggleSenha) {
+    toggleSenha.addEventListener("click", () => {
+      const tipo = campoSenha.getAttribute("type") === "password" ? "text" : "password";
+      campoSenha.setAttribute("type", tipo);
+      iconeSenha.textContent = tipo === "password" ? "visibility" : "visibility_off";
+    });
+  }
+</script>
+
+</body>
+</html>

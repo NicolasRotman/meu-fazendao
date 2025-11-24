@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meu Fazendão - Expense Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec49",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102215",
+                        "content-light": "#f8fcf9",
+                        "content-dark": "#1a2c1f",
+                        "text-light": "#0d1b11",
+                        "text-dark": "#e0f1e5",
+                        "subtle-light": "#4c9a5f",
+                        "subtle-dark": "#a2d8b0",
+                        "border-light": "#cfe7d5",
+                        "border-dark": "#2c4832",
+                        "primary-text": "#0d1b11",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        aside {
+            transition: width 0.3s;
+             overflow-x: hidden; /* só horizontal */
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex min-h-screen">
+<aside class="w-64 shrink-0 bg-background-light dark:bg-background-dark border-r border-surface-light dark:border-surface-dark/20 p-4 flex flex-col justify-between relative">
+<div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="FarmFlow logo with a green leaf" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDaPU_TaCX74M4e9lKS0oP0681Av1h4Dh3a6XRWvQFjRHK2TTWjlR6Kks3hmq5X0FXJduXwldWfEnShJ_rtKy3ysgIPIgw6uVet4XX4inibLEh9EKc7dYbJjMJf_5F4pmjsQOXIAS_xm-GMMwA16K-fxhvmIdU9QhEPXebvApRQASo12VCH78trXoMSOYWeatrltVxau1WJs0wY-t7_Fr29oJK36M1oPzTUZ97IHfb7ISuYVQNcl7sauDv3jFMcY5W68Qf_MvByPKx5");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-normal">Meu Fazendão</h1>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Management Suite</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT bg-primary/20 dark:bg-primary/30 text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('dashboard') }}">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<p class="text-sm font-bold leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary" href="{{ url_for('expenses') }}">
+<span class="material-symbols-outlined text-2xl">receipt_long</span>
+<p class="text-sm font-medium leading-normal">Expenses</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('machinery') }}">
+<span class="material-symbols-outlined text-2xl">agriculture</span>
+<p class="text-sm font-medium leading-normal">Machinery</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('products') }}">
+<span class="material-symbols-outlined text-2xl">inventory_2</span>
+<p class="text-sm font-medium leading-normal">Products</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('harvest') }}">
+<span class="material-symbols-outlined text-2xl">grass</span>
+<p class="text-sm font-medium leading-normal">Harvests</p>
+</a>
+</nav>
+</div>
+<button id="toggleSidebar"
+    class="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center
+           bg-background-light dark:bg-surface-dark border border-surface-light dark:border-surface-dark/20 
+           rounded-full text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light 
+           dark:hover:bg-surface-dark focus:outline-none focus:ring-2 focus:ring-primary/50">
+
+    <span id="toggleIcon" class="material-symbols-outlined text-xl">
+        chevron_left
+    </span>
+</button>
+
+</div>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="">
+<span class="material-symbols-outlined text-2xl">help</span>
+<p class="text-sm font-medium leading-normal">Help</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="#">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</div>
+</aside>
+<div class="flex-1">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-6xl flex-1">
+<header class="flex items-center justify-between whitespace-nowrap px-6 lg:px-10 py-3 bg-content-light dark:bg-content-dark rounded-xl">
+<div class="flex items-center gap-4 text-text-light dark:text-text-dark">
+<p class="text-text-light dark:text-text-dark text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Dashboard</p>
+</div>
+<div class="flex items-center gap-4">
+</div>
+</header>
+<main class="flex-1 mt-8">
+<!-- Substitua esta parte no seu dashboard.html -->
+<div class="flex min-w-72 flex-1 flex-col gap-2 rounded-xl border border-border-light dark:border-border-dark p-6 bg-content-light dark:bg-content-dark">
+    <p class="text-text-light dark:text-text-dark text-base font-medium leading-normal">Monthly Expenses</p>
+    <p class="text-text-light dark:text-text-dark tracking-light text-[32px] font-bold leading-tight truncate">R$ {{ expenses_total[0] }}</p>
+    <div class="flex gap-1">
+        <p class="text-subtle-light dark:text-subtle-dark text-base font-normal leading-normal">Last 6 months</p>
+        <p class="text-green-600 dark:text-green-400 text-base font-medium leading-normal">+2.5%</p>
+    </div>
+    <div class="flex min-h-[180px] flex-1 flex-col gap-8 py-4">
+        <!-- Gráfico Dinâmico -->
+        <div id="expenseChart" class="w-full" style="height: 150px;">
+            <svg id="chartSvg" fill="none" height="148" preserveAspectRatio="none" viewBox="0 0 478 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+                <!-- O path será gerado dinamicamente pelo JavaScript -->
+                <path id="chartArea" d="" fill="url(#paint0_linear_1131_5935)"></path>
+                <path id="chartLine" d="" stroke="#4c9a5f" stroke-linecap="round" stroke-width="3"></path>
+                <defs>
+                    <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_1131_5935" x1="236" x2="236" y1="1" y2="149">
+                        <stop stop-color="#e7f3ea"></stop>
+                        <stop offset="1" stop-color="#e7f3ea" stop-opacity="0"></stop>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+        <div class="flex justify-around">
+            <p class="text-subtle-light dark:text-subtle-dark text-[13px] font-bold leading-normal tracking-[0.015em]">Jan</p>
+            <p class="text-subtle-light dark:text-subtle-dark text-[13px] font-bold leading-normal tracking-[0.015em]">Feb</p>
+            <p class="text-subtle-light dark:text-subtle-dark text-[13px] font-bold leading-normal tracking-[0.015em]">Mar</p>
+            <p class="text-subtle-light dark:text-subtle-dark text-[13px] font-bold leading-normal tracking-[0.015em]">Apr</p>
+            <p class="text-subtle-light dark:text-subtle-dark text-[13px] font-bold leading-normal tracking-[0.015em]">May</p>
+            <p class="text-subtle-light dark:text-subtle-dark text-[13px] font-bold leading-normal tracking-[0.015em]">Jun</p>
+        </div>
+    </div>
+</div>
+
+<div class="flex flex-col divide-y divide-border-light dark:divide-border-dark">
+    {% for e in expenses %}
+        <div class="flex justify-between items-center py-3">
+            <div class="flex flex-col">
+                <p class="font-medium text-text-light dark:text-text-dark">
+                    {{e.nome}} - {{e.categoria}}
+                </p>
+
+                <p class="text-sm text-subtle-light dark:text-subtle-dark">
+                    Supplies - {{e.data}}
+                </p>
+            </div>
+
+            <p class="font-bold text-text-light dark:text-text-dark">
+                R$ {{e.valor}}
+            </p>
+        </div>  <!-- AQUI fecha o item -->
+    {% endfor %}
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-1 flex flex-col gap-6">
+<div class="flex flex-col gap-4 rounded-xl border border-border-light dark:border-border-dark p-6 bg-content-light dark:bg-content-dark">
+<h3 class="text-text-light dark:text-text-dark text-lg font-bold">Machinery Status</h3>
+
+    <div class="flex flex-col gap-3">
+        <div class="flex flex-1 gap-3 rounded-lg border border-border-light dark:border-border-dark p-4 flex-row items-center bg-background-light dark:bg-background-dark">
+        <span class="material-symbols-outlined text-green-500">check_circle</span>
+            <div class="flex flex-col gap-1">
+            <h2 class="text-text-light dark:text-text-dark text-base font-bold leading-tight">{{machinery[0]}}</h2>
+            <p class="text-subtle-light dark:text-subtle-dark text-sm font-normal leading-normal">Active</p>
+            </div>
+        </div>
+        <div class="flex flex-1 gap-3 rounded-lg border border-border-light dark:border-border-dark p-4 flex-row items-center bg-background-light dark:bg-background-dark">
+        <span class="material-symbols-outlined text-yellow-500">build</span>
+        <div class="flex flex-col gap-1">
+            <h2 class="text-text-light dark:text-text-dark text-base font-bold leading-tight">{{machinery[1]}}</h2>
+            <p class="text-subtle-light dark:text-subtle-dark text-sm font-normal leading-normal">Needs Maintenance</p>
+        </div>
+    </div>
+    <div class="flex flex-1 gap-3 rounded-lg border border-border-light dark:border-border-dark p-4 flex-row items-center bg-background-light dark:bg-background-dark">
+        <span class="material-symbols-outlined text-gray-500">power_settings_new</span>
+        <div class="flex flex-col gap-1">
+            <h2 class="text-text-light dark:text-text-dark text-base font-bold leading-tight">{{machinery[2]}}</h2>
+            <p class="text-subtle-light dark:text-subtle-dark text-sm font-normal leading-normal">Inactive</p>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<div class="flex flex-col gap-4 rounded-xl border border-border-light dark:border-border-dark p-6 bg-content-light dark:bg-content-dark">
+    <h3 class="text-text-light dark:text-text-dark text-lg font-bold">Current Harvest</h3>
+
+    <div class="flex flex-col gap-3">
+        {% for e in harvestD %}
+            <div class="flex gap-6 justify-between">
+                <p class="text-text-light dark:text-text-dark text-base font-medium leading-normal">{{e.nome}} - {{e.categoria}}</p>
+                <p class="text-text-light dark:text-text-dark text-sm font-normal leading-normal">{{e.porcentagem}}%</p>
+            </div>
+
+            <div class="rounded bg-border-light dark:bg-border-dark">
+                <div class="h-2 rounded bg-primary" style="width: {{ e.porcentagem }}%;"></div>
+            </div>
+
+            <p class="text-subtle-light dark:text-subtle-dark text-sm font-normal leading-normal">
+                Yield to Date: {{e.quantidade}} {{e.unidade}}
+            </p>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script>
+const sidebar = document.querySelector("aside");
+const toggleBtn = document.getElementById("toggleSidebar");
+const toggleIcon = document.getElementById("toggleIcon");
+
+toggleBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("collapsed");
+
+    if (sidebar.classList.contains("collapsed")) {
+        // Sidebar fechada
+        sidebar.style.width = "0";
+        toggleIcon.textContent = "chevron_right";
+    } else {
+        // Sidebar aberta
+        sidebar.style.width = "16rem"; // 64 * 0.25rem = w-64
+        toggleIcon.textContent = "chevron_left";
+    }
+});
+</script>
+
+<script>
+// Dados do gráfico (vindos do Flask)
+const monthlyExpenses = {{ monthly_expenses | tojson }};
+
+function generateChartPath(data) {
+    const maxValue = Math.max(...data);
+    const minValue = Math.min(...data);
+    const range = maxValue - minValue;
+    const svgWidth = 472; // Largura do SVG
+    const svgHeight = 148; // Altura do SVG
+    const padding = 20;
+    
+    // Normaliza os dados para caber no SVG
+    const normalizedData = data.map(value => {
+        return svgHeight - ((value - minValue) / range) * (svgHeight - padding * 2) - padding;
+    });
+    
+    // Calcula o espaçamento entre pontos
+    const pointSpacing = svgWidth / (data.length - 1);
+    
+    // Gera o path para a linha
+    let linePath = `M0 ${normalizedData[0]}`;
+    let areaPath = `M0 ${normalizedData[0]}`;
+    
+    for (let i = 1; i < data.length; i++) {
+        const x = i * pointSpacing;
+        linePath += ` L${x} ${normalizedData[i]}`;
+        areaPath += ` L${x} ${normalizedData[i]}`;
+    }
+    
+    // Fecha a área do gráfico
+    areaPath += ` L${svgWidth} ${svgHeight} L0 ${svgHeight} Z`;
+    
+    return { linePath, areaPath };
+}
+
+// Atualiza o gráfico quando a página carrega
+document.addEventListener('DOMContentLoaded', function() {
+    if (monthlyExpenses && monthlyExpenses.length > 0) {
+        const paths = generateChartPath(monthlyExpenses);
+        document.getElementById('chartLine').setAttribute('d', paths.linePath);
+        document.getElementById('chartArea').setAttribute('d', paths.areaPath);
+    }
+});
+
+// Opcional: Atualizar gráfico quando dados mudarem
+function updateChart(newData) {
+    const paths = generateChartPath(newData);
+    document.getElementById('chartLine').setAttribute('d', paths.linePath);
+    document.getElementById('chartArea').setAttribute('d', paths.areaPath);
+}
+</script>
+
+</body></html>

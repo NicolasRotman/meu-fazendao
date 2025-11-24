@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FarmFlow - Verificate password</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4CAF50",
+                        "background-light": "#F7F8FC",
+                        "background-dark": "#102215",
+                        "text-light": "#333333",
+                        "text-dark": "#f0f0f0",
+                        "text-secondary-light": "#555555",
+                        "text-secondary-dark": "#aaaaaa",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1a2c1f",
+                        "border-light": "#e0e0e0",
+                        "border-dark": "#3a4a3f"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom styles for the verification code input to match the theme */
+        .verification-input {
+            background-color: transparent;
+            border: 0;
+            border-bottom: 2px solid #e0e0e0; /* border-light */
+            text-align: center;
+            font-size: 1.5rem;
+            width: 3rem;
+            height: 3.5rem;
+            margin: 0 0.25rem;
+            appearance: textfield;
+        }
+        .verification-input:focus {
+            outline: none;
+            border-color: #4CAF50; /* primary */
+        }
+        .dark .verification-input {
+            border-color: #3a4a3f; /* border-dark */
+        }
+        .dark .verification-input:focus {
+            border-color: #4CAF50; /* primary */
+        }
+        .verification-input::-webkit-outer-spin-button,
+        .verification-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+<div class="relative flex min-h-screen w-full flex-col items-center justify-center p-4 overflow-hidden">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0 opacity-50 dark:opacity-5">
+<img class="h-full w-full object-cover" data-alt="Faint, out-of-focus background image of a farm landscape at sunrise" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_0KNeC3zyEUNQuI-WqeMrvVFzAWOzLu2y21Nx9Q4_PSYLudd6cDkOVg2FnO0I5xTFbvQyFoNzo1mCrHLTHPN7AhLn2JO15hW8zc60q86F7w6H8Pjm5mOPoCz0BZc3xbzyZ_RnzyeI0y4aafnHjaFx-GihW4kbJw8D8cW0fiWcYJjHt6vkRXAqQ8SgROjjoUUS6QasMrseyW96fh7G08_kYm5leA140hMKRUmxME2paEWSHE1whc9kIwKboRdOwW_z34PNbH8GbGxp"/>
+</div>
+<div class="relative z-10 flex w-full max-w-md flex-col items-center">
+<!-- Header -->
+<header class="mb-8 flex items-center gap-3">
+<div class="h-8 w-8 text-primary">
+<span class="material-symbols-outlined text-primary text-4xl">eco</span>
+<path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"></path>
+</svg>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-text-light dark:text-text-dark">Meu Fazendão</h1>
+</header>
+<!-- Central Card/Panel -->
+<main class="w-full rounded-xl bg-card-light dark:bg-card-dark p-8 shadow-lg border border-border-light dark:border-border-dark">
+<div class="flex flex-col items-center text-center">
+<!-- Page Heading -->
+<div class="mb-6 w-full">
+<p class="text-3xl font-black leading-tight tracking-tight text-text-light dark:text-text-dark">Verifique o seu Email</p>
+<p class="mt-2 text-base text-text-secondary-light dark:text-text-secondary-dark">Foi enviado um código de 6 digitos para seu Email</p>
+</div>
+
+</fieldset>
+</div>
+<div class="mb-4 w-full">
+<form method="POST" action="{{ url_for('verificar_codigo') }}" class="w-full flex flex-col items-center">
+
+    <div class="mb-6 flex justify-center py-3">
+        <fieldset class="relative flex gap-2">
+            <input class="verification-input" maxlength="1" name="d1" required>
+            <input class="verification-input" maxlength="1" name="d2" required>
+            <input class="verification-input" maxlength="1" name="d3" required>
+            <input class="verification-input" maxlength="1" name="d4" required>
+            <input class="verification-input" maxlength="1" name="d5" required>
+            <input class="verification-input" maxlength="1" name="d6" required>
+        </fieldset>
+    </div>
+
+    <div class="mb-4 w-full">
+        <button type="submit"
+            class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-wide transition-colors hover:bg-primary/90">
+            <span class="truncate">Verificar código</span>
+        </button>
+    </div>
+
+</form>
+
+</div>
+<!-- Meta Text / Resend Link -->
+<p class="text-sm font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">Não recebeu o código <a class="font-semibold text-primary underline" href="#">Reenviar</a></p>
+</div>
+</main>
+<!-- Back Link -->
+<div class="mt-8 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-base">arrow_back</span>
+<a class="text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary" href="{{ url_for('login') }}">Retornar ao Login</a>
+</div>
+</div>
+</div>
+
+</body></html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meu Fazendão - Expense Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec49",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102215",
+                        "content-light": "#f8fcf9",
+                        "content-dark": "#1a2c1f",
+                        "text-light": "#0d1b11",
+                        "text-dark": "#e0f1e5",
+                        "subtle-light": "#4c9a5f",
+                        "subtle-dark": "#a2d8b0",
+                        "border-light": "#cfe7d5",
+                        "border-dark": "#2c4832",
+                        "primary-text": "#0d1b11",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex min-h-screen">
+<aside class="w-64 shrink-0 bg-background-light dark:bg-background-dark border-r border-surface-light dark:border-surface-dark/20 p-4 flex flex-col justify-between relative">
+<div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="FarmFlow logo with a green leaf" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDaPU_TaCX74M4e9lKS0oP0681Av1h4Dh3a6XRWvQFjRHK2TTWjlR6Kks3hmq5X0FXJduXwldWfEnShJ_rtKy3ysgIPIgw6uVet4XX4inibLEh9EKc7dYbJjMJf_5F4pmjsQOXIAS_xm-GMMwA16K-fxhvmIdU9QhEPXebvApRQASo12VCH78trXoMSOYWeatrltVxau1WJs0wY-t7_Fr29oJK36M1oPzTUZ97IHfb7ISuYVQNcl7sauDv3jFMcY5W68Qf_MvByPKx5");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-normal">Meu Fazendão</h1>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Management Suite</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('dashboard') }}">
+<span class="material-symbols-outlined text-2xl">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary" href="{{ url_for('expenses') }}">
+<span class="material-symbols-outlined text-2xl">receipt_long</span>
+<p class="text-sm font-medium leading-normal">Expenses</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('machinery') }}">
+<span class="material-symbols-outlined text-2xl">agriculture</span>
+<p class="text-sm font-medium leading-normal">Machinery</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT bg-primary/20 dark:bg-primary/30 text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('products') }}">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<p class="text-sm font-bold leading-normal">Products</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="{{ url_for('harvest') }}">
+<span class="material-symbols-outlined text-2xl">grass</span>
+<p class="text-sm font-medium leading-normal">Harvests</p>
+</a>
+</nav>
+</div>
+<button class="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-background-light dark:bg-surface-dark border border-surface-light dark:border-surface-dark/20 rounded-full text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="material-symbols-outlined text-xl">chevron_left</span>
+</button>
+</div>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="#">
+<span class="material-symbols-outlined text-2xl">help</span>
+<p class="text-sm font-medium leading-normal">Help</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light-primary dark:text-text-dark-primary hover:bg-surface-light dark:hover:bg-surface-dark" href="#">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</div>
+</aside>
+<main class="flex-1 p-8">
+<div class="w-full max-w-7xl mx-auto">
+<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+<div class="flex flex-col gap-2">
+<p class="text-[#0d1b11] dark:text-gray-100 text-4xl font-black leading-tight tracking-[-0.033em]">Produtos</p>
+</div>
+<span class="truncate">Add New Product</span>
+<button onclick="openProductsModal()" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/30 dark:bg-primary/30 text-[#0d1b11] dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Add New Product</span>
+</button>
+</div>
+<div class="flex flex-wrap justify-between gap-4 p-4 border rounded-xl bg-white/50 dark:bg-black/10 border-gray-200 dark:border-gray-800 mb-6">
+<div class="flex items-center gap-2">
+<button class="p-2 text-[#0d1b11] dark:text-gray-300 rounded-lg hover:bg-primary/20 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 text-[#0d1b11] dark:text-gray-300 rounded-lg hover:bg-primary/20 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 text-[#0d1b11] dark:text-gray-300 rounded-lg hover:bg-primary/20 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-primary text-black gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-4">
+<span class="material-symbols-outlined text-xl font-bold">add</span>
+<span class="truncate">Update Stock</span>
+</button>
+</div>
+<div class="flex gap-3 mb-6 overflow-x-auto pb-2">
+<div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary/30 dark:bg-primary/30 pl-3 pr-4 cursor-pointer">
+<span class="material-symbols-outlined text-base">inventory_2</span>
+<p class="text-[#0d1b11] dark:text-white text-sm font-medium leading-normal">All Products</p>
+</div>
+<div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-200 dark:bg-gray-800 pl-3 pr-4 cursor-pointer text-[#0d1b11] dark:text-gray-300 hover:bg-primary/20 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined text-base">check_circle</span>
+<p class="text-sm font-medium leading-normal">High Stock</p>
+</div>
+<div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-200 dark:bg-gray-800 pl-3 pr-4 cursor-pointer text-[#0d1b11] dark:text-gray-300 hover:bg-primary/20 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined text-base">warning</span>
+<p class="text-sm font-medium leading-normal">Medium Stock</p>
+</div>
+<div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-200 dark:bg-gray-800 pl-3 pr-4 cursor-pointer text-[#0d1b11] dark:text-gray-300 hover:bg-primary/20 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined text-base">error</span>
+<p class="text-sm font-medium leading-normal">Low Stock</p>
+</div>
+</div>
+<div class="overflow-x-auto">
+<div class="inline-block min-w-full align-middle">
+<div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/10">
+<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
+<thead class="bg-gray-50 dark:bg-gray-800/50">
+<tr>
+<th class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-[#0d1b11] dark:text-gray-200 w-12" scope="col">
+<input class="h-5 w-5 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-900 bg-transparent text-primary dark:text-primary checked:bg-primary dark:checked:bg-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold text-[#0d1b11] dark:text-gray-200" scope="col">Product Name</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold text-[#0d1b11] dark:text-gray-200" scope="col">Stock Level</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold text-[#0d1b11] dark:text-gray-200" scope="col">Quantity</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold text-[#0d1b11] dark:text-gray-200" scope="col">Storage Location</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold text-[#0d1b11] dark:text-gray-200" scope="col">Estimated Value</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold text-[#0d1b11] dark:text-gray-200" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+    {%for e in products%}
+            <tr>
+            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm">
+            <input class="h-5 w-5 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-900 bg-transparent text-primary dark:text-primary checked:bg-primary dark:checked:bg-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-[#0d1b11] dark:text-gray-100">{{e.name}}</td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm">
+            <span class="inline-flex items-center rounded-md bg-red-100 dark:bg-red-900/50 px-2 py-1 text-xs font-medium text-red-700 dark:text-red-300">Low</span>
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-[#4c9a5f] dark:text-gray-400">{{e.quantity}} {{e.unit}}</td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-[#4c9a5f] dark:text-gray-400">{{e.location}}</td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-[#4c9a5f] dark:text-gray-400">R$ {{e.value}}</td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm">
+            <!-- DIV FLEX PARA BOTÕES LADO A LADO -->
+            <div class="flex items-center gap-2">
+                <!-- Botão Editar -->
+                <button onclick="openEditProductModal('{{ e.name }}', '{{ e.type }}', '{{ e.location }}', '{{ e.quantity }}', '{{ e.unit }}', '{{ e.value }}')"
+                        class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">
+                    Editar
+                </button>
+                
+                <!-- Form Deletar -->
+                <form action="/deletar_product" method="POST" class="m-0">
+                    <input type="hidden" name="id" value="{{ e.id }}">
+                    <button type="submit" class="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-colors">
+                        <span class="material-symbols-outlined text-xl">delete</span>
+                    </button>
+                </form>
+            </div>
+        </td>
+        </tr>
+        {%endfor%}
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+
+
+<form method="POST">
+<!-- Overlay -->
+<div id="modal-overlay" class="hidden fixed inset-0 bg-black/40 z-40"></div>
+
+<!-- Modal -->
+<div id="modal-products" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="flex flex-col w-full max-w-lg min-w-0 bg-white dark:bg-[#1f2923] rounded-xl shadow-lg">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col gap-1">
+                <h2 class="text-[#333333] dark:text-gray-100 text-xl font-bold">Add New Product</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">Fill in the details for the new inventory item.</p>
+            </div>
+
+            <button onclick="closeProductsModal()"
+                class="flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-400">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="flex flex-col gap-4 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <label class="flex flex-col flex-1 col-span-2">
+                    <p class="text-[#333333] dark:text-gray-300 text-sm font-medium pb-2">Product Name</p>
+                    <input name="product_name" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg 
+                        text-[#333333] dark:text-gray-100 focus:outline-0 focus:ring-2 focus:ring-primary/50 
+                        border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2c3a33] 
+                        placeholder:text-gray-400 dark:placeholder:text-gray-500 h-12 px-4" 
+                        placeholder="e.g., Corn Seed XB-24"/>
+                </label>
+
+                <label class="flex flex-col min-w-40 flex-1">
+                    <p class="text-[#333333] dark:text-gray-300 text-sm font-medium pb-2">Type</p>
+                    <select name="categoria" class="form-select flex w-full min-w-0 flex-1 rounded-lg 
+                        text-[#333333] dark:text-gray-100 focus:ring-2 focus:ring-primary/50 
+                        border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2c3a33] 
+                        h-12 appearance-none p-3">
+                        <option>Select product type</option>
+                        <option value="grain">Grain</option>
+                        <option value="fertilizer">Fertilizer</option>
+                        <option value="pesticide">Pesticide</option>
+                        <option value="seed">Seed</option>
+                    </select>
+                </label>
+
+                <label class="flex flex-col min-w-40 flex-1">
+                    <p class="text-[#333333] dark:text-gray-300 text-sm font-medium pb-2">Quantity in Stock</p>
+                    <input name="quantidade" type="number" class="form-input flex w-full min-w-0 rounded-lg 
+                        text-[#333333] dark:text-gray-100 focus:ring-2 focus:ring-primary/50 
+                        border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2c3a33] h-12
+                        placeholder:text-gray-400 dark:placeholder:text-gray-500 px-4"
+                        placeholder="e.g., 1000"/>
+                </label>
+
+                <label class="flex flex-col min-w-40 flex-1">
+                    <p class="text-[#333333] dark:text-gray-300 text-sm font-medium pb-2">Unit of Measure</p>
+                    <select name="unidade_medida"class="form-select flex w-full min-w-0 rounded-lg 
+                        text-[#333333] dark:text-gray-100 focus:ring-2 focus:ring-primary/50 
+                        border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2c3a33] 
+                        h-12 appearance-none p-3">
+                        <option>Select unit</option>
+                        <option value="kg">kg</option>
+                        <option value="liters">liters</option>
+                        <option value="bags">bags</option>
+                        <option value="tons">tons</option>
+                    </select>
+                </label>
+
+                <label class="flex flex-col min-w-40 flex-1">
+                    <p class="text-[#333333] dark:text-gray-300 text-sm font-medium pb-2">Storage Location</p>
+                    <input name="storage_location" class="form-input flex w-full min-w-0 rounded-lg 
+                        text-[#333333] dark:text-gray-100 focus:ring-2 focus:ring-primary/50 
+                        border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2c3a33] h-12
+                        placeholder:text-gray-400 dark:placeholder:text-gray-500 px-4"
+                        placeholder="e.g., Barn 2, Shelf C"/>
+                </label>
+            </div>
+
+            <!-- Estimated Value -->
+            <label class="flex flex-col flex-1">
+                <div class="flex items-center justify-between pb-2">
+                    <p class="text-[#333333] dark:text-gray-300 text-sm font-medium">Estimated Value (per unit)</p>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">Optional</span>
+                </div>
+
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 dark:text-gray-400">$</span>
+                    <input type="number" class="form-input flex w-full min-w-0 rounded-lg 
+                        text-[#333333] dark:text-gray-100 focus:ring-2 focus:ring-primary/50 
+                        border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2c3a33] h-12
+                        placeholder:text-gray-400 dark:placeholder:text-gray-500 pl-8 pr-4"
+                        placeholder="0.00"/>
+                </div>
+            </label>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
+
+            <button class="px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary/90">
+                Add Product
+            </button>
+        </div>
+    </div>
+</div>
+</form>
+
+<!-- Edit Product Modal -->
+<div id="EditProductModal"
+     class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 p-4">
+
+    <div class="relative w-full max-w-2xl bg-background-light dark:bg-background-dark rounded-xl shadow-2xl flex flex-col font-display">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-border-light dark:border-border-dark">
+            <div class="flex flex-col">
+                <h2 id="editProductTitle" class="text-2xl font-bold text-text-light dark:text-text-dark">Edit Product</h2>
+                <p id="editProductSubtitle" class="text-sm text-gray-500 dark:text-gray-400">Update product details</p>
+            </div>
+
+            <button type="button" onclick="closeEditProductModal()"
+                    class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 space-y-6">
+            <form method="post" action="/edit_products">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <label class="flex flex-col col-span-2">
+                    <p class="pb-2 text-base font-medium">Product Name</p>
+                    <input id="editProductName" name="name" class="form-input h-12">
+                </label>
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-base font-medium">Type</p>
+                    <select id="editProductType" name="type" class="form-input h-12">
+                        <option>Seed</option>
+                        <option>Fertilizer</option>
+                        <option>Pesticide</option>
+                        <option>Crop</option>
+                    </select>
+                </label>
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-base font-medium">Storage Location</p>
+                    <input id="editProductLocation" name="location" class="form-input h-12">
+                </label>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="flex flex-col">
+                        <p class="pb-2 text-base font-medium">Quantity</p>
+                        <input id="editProductQuantity" name="quantity" type="number" class="form-input h-12">
+                    </label>
+
+                    <label class="flex flex-col">
+                        <p class="pb-2 text-base font-medium">Unit</p>
+                        <input id="editProductUnit" name="unit" class="form-input h-12">
+                    </label>
+                </div>
+
+                <label class="flex flex-col col-span-2">
+                    <p class="pb-2 text-base font-medium">Estimated Value</p>
+
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                        <input id="editProductValue" name="value" type="number" class="form-input h-12 pl-7">
+                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">per unit</span>
+                    </div>
+                </label>
+            
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-end p-6 border-t border-border-light dark:border-border-dark space-x-4">
+            <button onclick="closeEditProductModal()"
+                class="h-11 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-sm font-medium">
+                Cancel
+            </button>
+
+            <button type="submit" id="editProductSaveButton"
+                class="h-11 px-4 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90">
+                Save Changes
+            </button>
+        </div>
+    </form>
+
+    </div>
+</div>
+
+
+<script>
+    function openProductsModal() {
+    document.getElementById("modal-overlay").classList.remove("hidden");
+    document.getElementById("modal-products").classList.remove("hidden");
+}
+
+function closeProductsModal() {
+    document.getElementById("modal-overlay").classList.add("hidden");
+    document.getElementById("modal-products").classList.add("hidden");
+}
+</script>
+
+<script>
+function openEditProductModal(name, type, location, quantity, unit, value) {
+    console.log("=== DEBUG EDIT PRODUCT ===");
+    console.log("Name:", name);
+    console.log("Type:", type); 
+    console.log("Location:", location);
+    console.log("Quantity:", quantity);
+    console.log("Unit:", unit);
+    console.log("Value:", value);
+    console.log("========================");
+    
+    // Preencher os campos
+    document.getElementById("editProductName").value = name || '';
+    document.getElementById("editProductLocation").value = location || '';
+    document.getElementById("editProductQuantity").value = quantity || '';
+    document.getElementById("editProductUnit").value = unit || '';
+    document.getElementById("editProductValue").value = value || '';
+    
+    // Selecionar tipo no dropdown
+    if (type) {
+        const typeSelect = document.getElementById("editProductType");
+        const typeLower = type.toLowerCase();
+        for (let i = 0; i < typeSelect.options.length; i++) {
+            if (typeSelect.options[i].value === typeLower) {
+                typeSelect.selectedIndex = i;
+                console.log("Tipo selecionado:", typeSelect.options[i].value);
+                break;
+            }
+        }
+    }
+    
+    document.getElementById("EditProductModal").classList.remove("hidden");
+}
+</script>
+
+</body></html>
