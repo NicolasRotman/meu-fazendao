@@ -38,6 +38,24 @@ if not os.path.exists(tabela):
     with open(tabela, "w") as f:
         pass
 
+@app.route("/deletar_employees", methods=['POST'])
+def deletar_employees():
+    item_id = request.form['id']
+
+    '''
+    remoção de dados no banco
+    '''
+    return redirect(request.referrer)
+
+@app.route("/edit_employees", methods=['POST'])
+def edit_employees():
+
+    '''
+    remoção de dados no banco
+    '''
+    return redirect(request.referrer)
+
+
 @app.route("/deletar_expense", methods=['POST'])
 def deletar_expense():
     item_id = request.form["id"]
@@ -159,7 +177,7 @@ def login():
 
     return render_template("login.html")
 
-@app.route("/Login")
+@app.route("/fazer_cadastro")
 def cadastro_pas():
     return render_template('cadastro.html')
 
@@ -188,6 +206,16 @@ def cadastro():
 
     return render_template("cadastro.html")
 
+@app.route('/employees', methods=["GET", "POST"])
+def employees():
+    if request.method == 'POST':
+        return redirect(url_for("employees"))
+    else:
+        employees = [
+            {"id": "1", "name": "henrique", "email":"email@email.com", "telefone": "1234556", "area":"A-2", "funcao":"maquinista", "status":"ativo"}
+        ]
+        return render_template('employees.html', employees=employees)
+
 @app.route('/dashboard')
 def dashboard():
     expenses = [
@@ -206,7 +234,7 @@ def dashboard():
     expenses_lista = sum([10000, 20000, 5000])
     expenses_total = [expenses_lista]
 
-    monthly_expenses = [1200, 1800, 1500, 2200, 1900, 35000]
+    monthly_expenses = [1200, 1800, 1500, 200, 19000, 3500]
 
     return render_template('dashboard.html', expenses=expenses, machinery=machinery, harvestD=harvestD,  expenses_total=expenses_total, monthly_expenses=monthly_expenses)
 
@@ -242,7 +270,7 @@ def machinery():
         machine_id = request.form.get('machine_id')
         status = request.form.get('status')
 
-        random_image = f"tractors/{random.randint(1,3)}.jpg"
+        random_image = f"tractors/{random.randint(1,6)}.jpg"
         photo_url = url_for('static', filename=random_image)
 
         '''
@@ -260,7 +288,7 @@ def machinery():
             'data': '2024-01-15',
             'type': 'tractor',
             'serial': 'JD12345',
-            'img_url': 'http://localhost:5000/static/tractors/1.jpg',
+            'img_url': 'http://localhost:5000/static/tractors/6.jpg',
             'horas_w': '250',
             'prox_w': '2024-12-01'
         },
