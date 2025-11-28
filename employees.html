@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Employees - Meu Fazendão</title>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<script>
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                "primary": "#13ec49",
+                "background-light": "#f6f8f6",
+                "background-dark": "#102215",
+                "content-light": "#f8fcf9",
+                "content-dark": "#1a2c1f",
+                "text-light": "#0d1b11",
+                "text-dark": "#e0f1e5",
+                "subtle-light": "#4c9a5f",
+                "subtle-dark": "#a2d8b0",
+                "border-light": "#cfe7d5",
+                "border-dark": "#2c4832",
+            },
+            fontFamily: {
+                "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {
+                "DEFAULT": "0.5rem",
+                "lg": "0.75rem",
+                "xl": "1rem",
+                "full": "9999px"
+            },
+        },
+    },
+}
+</script>
+
+<style>
+aside {
+    transition: width 0.3s;
+    overflow-x: hidden;
+}
+.material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+}
+</style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display">
+
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="w-64 shrink-0 bg-background-light dark:bg-background-dark border-r border-border-light dark:border-border-dark p-4 flex flex-col justify-between relative">
+
+<div>
+    <div class="flex flex-col gap-6">
+
+        <!-- LOGO -->
+        <div class="flex items-center gap-3 px-2">
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDaPU_TaCX74M4e9lKS0oP0681Av1h4Dh3a6XRWvQFjRHK2TTWjlR6Kks3hmq5X0FXJduXwldWfEnShJ_rtKy3ysgIPIgw6uVet4XX4inibLEh9EKc7dYbJjMJf_5F4pmjsQOXIAS_xm-GMMwA16K-fxhvmIdU9QhEPXebvApRQASo12VCH78trXoMSOYWeatrltVxau1WJs0wY-t7_Fr29oJK36M1oPzTUZ97IHfb7ISuYVQNcl7sauDv3jFMcY5W68Qf_MvByPKx5");'>
+            </div>
+
+            <div class="flex flex-col">
+                <h1 class="text-text-light dark:text-text-dark text-base font-bold leading-normal">Meu Fazendão</h1>
+                <p class="text-text-light dark:text-text-dark text-sm">Management Suite</p>
+            </div>
+        </div>
+
+        <!-- NAV -->
+        <nav class="flex flex-col gap-2">
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light dark:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark"
+               href="{{ url_for('dashboard') }}">
+                <span class="material-symbols-outlined text-2xl">dashboard</span>
+                <p class="text-sm font-medium">Dashboard</p>
+            </a>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light dark:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark"
+               href="{{ url_for('expenses') }}">
+                <span class="material-symbols-outlined text-2xl">receipt_long</span>
+                <p class="text-sm font-medium">Expenses</p>
+            </a>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light dark:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark"
+               href="{{ url_for('machinery') }}">
+                <span class="material-symbols-outlined text-2xl">agriculture</span>
+                <p class="text-sm font-medium">Machinery</p>
+            </a>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light dark:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark"
+               href="{{ url_for('products') }}">
+                <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                <p class="text-sm font-medium">Products</p>
+            </a>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light dark:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark"
+               href="{{ url_for('harvest') }}">
+                <span class="material-symbols-outlined text-2xl">grass</span>
+                <p class="text-sm font-medium">Harvests</p>
+            </a>
+
+            <!-- ACTIVE PAGE (EMPLOYEES) -->
+            <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT bg-primary/20 dark:bg-primary/30 
+                      text-text-light dark:text-text-dark font-bold"
+               href="{{ url_for('employees') }}">
+                <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">group</span>
+                <p class="text-sm font-bold">Employees</p>
+            </a>
+
+        </nav>
+    </div>
+
+    <!-- BOTÃO DE COLAPSAR SIDEBAR -->
+    <button id="toggleSidebar"
+        class="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center
+            bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark 
+            rounded-full text-text-light dark:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark">
+        <span id="toggleIcon" class="material-symbols-outlined text-xl">chevron_left</span>
+    </button>
+</div>
+
+<!-- HELP / SETTINGS -->
+<div class="flex flex-col gap-2">
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light dark:text-text-dark 
+              hover:bg-surface-light dark:hover:bg-surface-dark"
+       href="">
+        <span class="material-symbols-outlined text-2xl">help</span>
+        <p class="text-sm font-medium">Help</p>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-text-light dark:text-text-dark 
+              hover:bg-surface-light dark:hover:bg-surface-dark"
+       href="">
+        <span class="material-symbols-outlined text-2xl">settings</span>
+        <p class="text-sm font-medium">Settings</p>
+    </a>
+
+</div>
+
+</aside>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<div class="flex-1">
+<div class="layout-container flex h-full grow flex-col">
+
+<div class="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-6xl flex-1">
+
+<!-- HEADER -->
+<header class="flex items-center justify-between whitespace-nowrap px-6 lg:px-10 py-3 
+                bg-content-light dark:bg-content-dark rounded-xl">
+    <p class="text-text-light dark:text-text-dark text-4xl font-black">Employees</p>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 mt-8">
+
+    <div class="flex flex-col gap-4">
+        <form method="POST">
+            <button type="button" onclick="openAdd()"
+                class="px-4 py-2 bg-primary text-text-light rounded-lg font-bold w-max hover:opacity-90">
+                Add Employee
+            </button>
+        </form>
+
+
+        <div class="rounded-xl border border-border-light dark:border-border-dark p-6 bg-content-light dark:bg-content-dark">
+{% if employees %}
+<div class="flex flex-col divide-y divide-border-light dark:divide-border-dark">
+
+    {% for emp in employees %}
+    <div class="py-4 flex justify-between items-center">
+
+        <div>
+            <p class="text-text-light dark:text-text-dark text-lg font-bold">
+                {{ emp.name }}
+            </p>
+
+            <p class="text-subtle-light dark:text-subtle-dark text-sm">
+                {{ emp.funcao }}
+            </p>
+
+            <p class="text-subtle-light dark:text-subtle-dark text-sm">
+                Área: {{ emp.area }}
+            </p>
+
+            <p class="text-subtle-light dark:text-subtle-dark text-sm">
+                Status: {{ emp.status }}
+            </p>
+        </div>
+
+        <div class="flex gap-3">
+        <button onclick="openEdit('{{ emp.id }}', '{{ emp.name }}', '{{ emp.funcao }}', '{{ emp.area }}', '{{ emp.status }}')"
+                class="px-3 py-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 rounded-lg">
+            Edit
+        </button>
+
+        <form action="/deletar_employees">
+            <input type="hidden" name="id" value="{{ emp.id }}">
+            <a href=""
+                class="px-3 py-1 bg-red-500/20 text-red-700 dark:text-red-300 rounded-lg">
+                Delete
+            </a>
+        </form>
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+{% else %}
+<p class="text-text-light dark:text-text-dark">No employees registered.</p>
+{% endif %}
+
+
+        </div>
+
+    </div>
+
+</main>
+
+</div>
+</div>
+</div>
+
+</div>
+<!-- ===========================
+     MODAL: ADD EMPLOYEE
+=========================== -->
+<div id="modalAdd" class="hidden absolute inset-0 z-20 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-background-light dark:bg-background-dark rounded-xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Add Employee</h2>
+            <button onclick="closeAdd()" class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <form method="POST" class="p-6 space-y-6 overflow-y-auto">
+             <input type="hidden" name="action" value="add_employee">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-gray-700 dark:text-gray-300">Full Name</p>
+                    <input name="name" required class="form-input h-11 rounded-lg px-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600" />
+                </label>
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-gray-700 dark:text-gray-300">Function</p>
+                    <input name="funcao" required class="form-input h-11 rounded-lg px-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600" />
+                </label>
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-gray-700 dark:text-gray-300">Area</p>
+                    <input name="area" required class="form-input h-11 rounded-lg px-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600" />
+                </label>
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-gray-700 dark:text-gray-300">Status</p>
+                    <select name="status" class="form-select h-11 rounded-lg px-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600">
+                        <option>Active</option>
+                        <option>Inactive</option>
+                    </select>
+                </label>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button type="button" onclick="closeAdd()" class="mr-3 px-4 h-10 rounded-lg bg-gray-100 dark:bg-gray-800">Cancel</button>
+                <button class="px-4 h-10 rounded-lg bg-primary text-background-light font-bold">Add</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- ===========================
+     MODAL: EDIT EMPLOYEE
+=========================== -->
+<div id="modalEdit" class="hidden absolute inset-0 z-20 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-background-light dark:bg-background-dark rounded-xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Edit Employee</h2>
+            <button onclick="closeEdit()" class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <form action="/edit_employees" id="editForm" method="POST" class="p-6 space-y-6 overflow-y-auto">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-gray-700 dark:text-gray-300">Full Name</p>
+                    <input id="edit_name" name="name" class="form-input h-11 rounded-lg px-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600" />
+                </label>
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-gray-700 dark:text-gray-300">Function</p>
+                    <input id="edit_funcao" name="funcao" class="form-input h-11 rounded-lg px-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600" />
+                </label>
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-gray-700 dark:text-gray-300">Area</p>
+                    <input id="edit_area" name="area" class="form-input h-11 rounded-lg px-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600" />
+                </label>
+
+                <label class="flex flex-col">
+                    <p class="pb-2 text-gray-700 dark:text-gray-300">Status</p>
+                    <select id="edit_status" name="status" class="form-select h-11 rounded-lg px-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600">
+                        <option>Active</option>
+                        <option>Inactive</option>
+                    </select>
+                </label>
+
+            </div>
+
+            <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button type="button" onclick="closeEdit()" class="mr-3 px-4 h-10 rounded-lg bg-gray-100 dark:bg-gray-800">Cancel</button>
+                <button class="px-4 h-10 rounded-lg bg-primary text-background-light font-bold">Save</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- ===========================
+     MODAL SCRIPT
+=========================== -->
+<script>
+function openAdd() {
+    document.getElementById("modalAdd").classList.remove("hidden");
+}
+
+function closeAdd() {
+    document.getElementById("modalAdd").classList.add("hidden");
+}
+
+function openEdit(id, name, funcao, area, status) {
+    document.getElementById("modalEdit").classList.remove("hidden");
+
+    document.getElementById("editForm").action = `/edit_employees`;
+    document.getElementById("edit_name").value = name;
+    document.getElementById("edit_funcao").value = funcao;
+    document.getElementById("edit_area").value = area;
+    document.getElementById("edit_status").value = status;
+}
+
+function closeEdit() {
+    document.getElementById("modalEdit").classList.add("hidden");
+}
+</script>
+
+
+<!-- SIDEBAR SCRIPT -->
+<script>
+const sidebar = document.querySelector("aside");
+const toggleBtn = document.getElementById("toggleSidebar");
+const toggleIcon = document.getElementById("toggleIcon");
+
+toggleBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("collapsed");
+
+    if (sidebar.classList.contains("collapsed")) {
+        sidebar.style.width = "0";
+        toggleIcon.textContent = "chevron_right";
+    } else {
+        sidebar.style.width = "16rem";
+        toggleIcon.textContent = "chevron_left";
+    }
+});
+</script>
+
+</body>
+</html>
