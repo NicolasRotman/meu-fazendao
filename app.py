@@ -14,6 +14,55 @@ tabela = 'meu_fazendao.txt'
 conexao = sqlite3.connect("meu_banco.db")
 cursor = conexao.cursor()
 
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_name TEXT NOT NULL,
+    categoria TEXT NOT NULL,
+    quantidade REAL NOT NULL,
+    unidade_medida TEXT NOT NULL,
+    storage_location TEXT NOT NULL,
+    value REAL NOT NULL
+);
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS harvest (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    crop_name TEXT NOT NULL,
+    planting_date DATE NOT NULL,
+    harvest_date DATE NOT NULL,
+    estimated_yield REAL NOT NULL,
+    unit TEXT NOT NULL,
+    cost REAL
+);
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS machinery (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    machine_name TEXT NOT NULL,
+    categoria TEXT NOT NULL,
+    date DATE NOT NULL,
+    valor REAL NOT NULL,
+    machine_id TEXT NOT NULL,
+    status TEXT
+);
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS expenses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    expense_name TEXT NOT NULL,
+    categoria TEXT NOT NULL,
+    machine TEXT NOT NULL,
+    valor REAL NOT NULL,
+    data DATE NOT NULL
+);
+""")
+
+conexao.commit()
+conexao.close()
 def enviar_email(destinatario, assunto, corpo):
     email_remetente = 'meufazendao@gmail.com'
     senha = 'wdfu pgrd ubqn tmaa'
@@ -38,56 +87,53 @@ if not os.path.exists(tabela):
     with open(tabela, "w") as f:
         pass
 
-@app.route("/deletar_employees", methods=['POST'])
-def deletar_employees():
-    item_id = request.form['id']
-
-    '''
-    remoção de dados no banco
-    '''
-    return redirect(request.referrer)
-
-@app.route("/edit_employees", methods=['POST'])
-def edit_employees():
-
-    '''
-    remoção de dados no banco
-    '''
-    return redirect(request.referrer)
-
-
+# DELETES FUNCIONANDO 29/11 20:55
 @app.route("/deletar_expense", methods=['POST'])
 def deletar_expense():
+
     item_id = request.form["id"]
-    '''
-    remoção de dados no banco
-    '''
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+    cursor.execute("DELETE FROM expenses WHERE id = ?", (item_id,))
+    conexao.commit()
+    conexao.close()
+
     return redirect(request.referrer)
 
 @app.route("/deletar_harvest", methods=['POST'])
 def deletar_harvest():
+
     item_id = request.form["id"]
-    '''
-    remoção de dados no banco
-    '''
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+    cursor.execute("DELETE FROM harvest WHERE id = ?", (item_id,))
+    conexao.commit()
+    conexao.close()
+
     return redirect(request.referrer)
 
 @app.route("/deletar_machine", methods=['POST'])
 def deletar_machine():
     item_id = request.form["id"]
-    
-    '''
-    remoção de dados no banco
-    '''
+
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+    cursor.execute("DELETE FROM machinery WHERE id = ?", (item_id,))
+    conexao.commit()
+    conexao.close()
+
     return redirect(request.referrer)
 
 @app.route("/deletar_product", methods=['POST'])
 def deletar_product():
     item_id = request.form["id"]
-    
-    '''
-    remoção de dados no banco
-    '''
+
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+    cursor.execute("DELETE FROM products WHERE id = ?", (item_id,))
+    conexao.commit()
+    conexao.close()
+
     return redirect(request.referrer)
 
 @app.route("/edit_expense", methods=['POST'])
@@ -146,8 +192,16 @@ def edit_products():
     '''
     atualização dos dados no banco
     '''
+    
+@app.route("/edit_employees", methods=['POST'])
+def edit_employees():
+    name = request.form.get("name")
+    employee_function = request.form.get("fuction")
+    area = request.form.get("area")
+    status = request.form.get("status")
+    wage = request.form.get("wage")
 
-    return redirect(url_for("products"))
+    return redirect(url_for("employees"))
 
 @app.route("/")
 def home():
@@ -177,7 +231,7 @@ def login():
 
     return render_template("login.html")
 
-@app.route("/fazer_cadastro")
+@app.route("/Login")
 def cadastro_pas():
     return render_template('cadastro.html')
 
@@ -206,40 +260,61 @@ def cadastro():
 
     return render_template("cadastro.html")
 
-@app.route('/employees', methods=["GET", "POST"])
-def employees():
-    if request.method == 'POST':
-        return redirect(url_for("employees"))
-    else:
-        employees = [
-            {"id": "1", "name": "henrique", "email":"email@email.com", "telefone": "1234556", "area":"A-2", "funcao":"maquinista", "status":"ativo"}
-        ]
-        return render_template('employees.html', employees=employees)
-
 @app.route('/dashboard')
 def dashboard():
-    expenses = [
-        {"id": 1, "nome": "Compra de sementes", "categoria": "Seeds", "valor": 150.75, "data": "2023-10-20"},
-        {"id": 2, "nome": "Troca de óleo do trator", "categoria": "Maintenance", "valor": 320.00, "data": "2023-10-25"},
-        {"id": 3, "nome": "Combustível", "categoria": "Fuel", "valor": 120.50, "data": "2023-10-27"},
-    ]
+
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT id, expense_name, categoria, machine, valor, data
+        FROM expenses
+    """)
+    expensess = cursor.fetchall()
+    conexao.close()
+
+    expenseslista = []
+    for m in expensess:
+        expenseslista.append({
+            "id": m[0],
+            "nome": m[1],
+            "categoria": m[2],
+            "valor": m[4],
+            "data": m[5],
+        })
 
     machinery = [3,4,7]
-    harvestD = [
-        {"id": 1, "nome": "trigo", "categoria": "fruta", "unidade": "kg", "porcentagem":20, "quantidade": "45"},
-        {"id": 2, "nome": "uva", "categoria": "fruta", "unidade": "ton","porcentagem":40, "quantidade": "1.2"},
-        {"id": 3, "nome": "melancia", "categoria": "fruta", "unidade": "kg","porcentagem":80, "quantidade": "13"},
-    ]
+
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT id, crop_name, planting_date, harvest_date, estimated_yield, unit, cost
+        FROM harvest
+    """)
+    harvests = cursor.fetchall()
+    conexao.close()
+
+    harvest = []
+    for h in harvests:
+        harvest.append({
+            "id": h[0],
+            "nome": h[1],
+            "categoria": "fruta",
+            "unidade": h[5],
+            "porcentagem":"60",
+            "quantidade": h[4],
+        })
 
     expenses_lista = sum([10000, 20000, 5000])
     expenses_total = [expenses_lista]
 
-    monthly_expenses = [1200, 1800, 1500, 200, 19000, 3500]
+    monthly_expenses = [1200, 1800, 1500, 2200, 1900, 35000]
 
-    return render_template('dashboard.html', expenses=expenses, machinery=machinery, harvestD=harvestD,  expenses_total=expenses_total, monthly_expenses=monthly_expenses)
+    return render_template('dashboard.html', expenses=expenseslista, machinery=machinery, harvestD=harvest,  expenses_total=expenses_total, monthly_expenses=monthly_expenses)
 
 @app.route('/expenses', methods=['GET', 'POST'])
-def expenses():
+def expenses(): # FUNCIONANDO 29/11 19:46
     if request.method == 'POST':
         if "expense_name" in request.form:
             expense_name = request.form.get("expense_name")
@@ -247,21 +322,45 @@ def expenses():
             machine = request.form.get("machine")
             valor = request.form.get("valor")
             data = request.form.get("date")
-            '''
-            inserção dos dados das despesas no banco
-            '''
-            return redirect(url_for("expenses"))
-    else:
-        expenses = [
-            {"id": 1, "nome": "Compra de sementes", "categoria": "Seeds", "valor": 150.75, "data": "2023-10-20", "machine": "--"},
-            {"id": 2, "nome": "Troca de óleo do trator", "categoria": "Maintenance", "valor": 320.00, "data": "2023-10-25", "machine": "Jhonson"},
-            {"id": 3, "nome": "Combustível", "categoria": "Fuel", "valor": 120.50, "data": "2023-10-27", "machine":"--"},
-        ]
 
-        return render_template('expenses.html', expenses=expenses)
+        conexao = sqlite3.connect("meu_banco.db")
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+            INSERT INTO expenses 
+            (expense_name, categoria, machine, valor, data)
+            VALUES (?, ?, ?, ?, ?)
+        """, (expense_name, categoria, machine, valor, data))
+
+        conexao.commit()
+        conexao.close()
+
+        return redirect('/expenses')
+
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT id, expense_name, categoria, machine, valor, data
+        FROM expenses
+    """)
+    expensess = cursor.fetchall()
+    conexao.close()
+
+    expenseslista = []
+    for m in expensess:
+        expenseslista.append({
+            "id": m[0],
+            "nome": m[1],
+            "categoria": m[2],
+            "valor": m[4],
+            "data": m[5],
+            "machine": m[3],
+        })
+    return render_template('expenses.html', expenses=expenseslista)
 
 @app.route('/machinery', methods=['GET', 'POST'])
-def machinery():
+def machinery(): # FUNCIONANDO 29/11 19:09
     if request.method == 'POST':
         machine_name = request.form.get("machine_name")
         categoria = request.form.get("categoria")
@@ -270,106 +369,155 @@ def machinery():
         machine_id = request.form.get('machine_id')
         status = request.form.get('status')
 
-        random_image = f"tractors/{random.randint(1,6)}.jpg"
+        random_image = f"tractors/{random.randint(1,3)}.jpg"
         photo_url = url_for('static', filename=random_image)
 
-        '''
-        inserção dos dados das maquinas no banco
-        '''
-        return redirect(url_for("machinery"))
-    else:
+        conexao = sqlite3.connect("meu_banco.db")
+        cursor = conexao.cursor()
 
-        machines = [
-                {
-            'id': 1,
-            'name': 'Trator John Deere',
-            'valor': '150000',
-            'status': 'Active', 
-            'data': '2024-01-15',
-            'type': 'tractor',
-            'serial': 'JD12345',
-            'img_url': 'http://localhost:5000/static/tractors/6.jpg',
-            'horas_w': '250',
-            'prox_w': '2024-12-01'
-        },
-        {
-            'id': 2,
-            'name': 'Colheitadeira Case',
-            'valor': '350000',
-            'status': 'Maintenance',
-            'data': '2023-08-20',
-            'type': 'harvester',
-            'serial': 'CS67890',
-            'img_url': 'http://localhost:5000/static/tractors/2.jpg',
-            'horas_w': '180',
-            'prox_w': '2024-11-15'
-        }
-        ]
+        cursor.execute("""
+            INSERT INTO machinery 
+            (machine_name, categoria, date, valor, machine_id, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (machine_name, categoria, date, valor, machine_id, status))
 
-        return render_template('machinery.html', machines=machines)
+        conexao.commit()
+        conexao.close()
+
+        return redirect('/machinery')
+
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT id, machine_name, categoria, date, valor, machine_id, status
+        FROM machinery
+    """)
+    machinerys = cursor.fetchall()
+    conexao.close()
+
+    machinerylista = []
+    for m in machinerys:
+        machinerylista.append({
+            "id": m[0],
+            "name": m[1],
+            "valor": m[4],
+            "status": "Active",
+            "data": m[3],
+            "type": m[2],
+            "serial": m[5],  
+            "img_url": "https://brasil.agrofystatic.com/media/catalog/product/cache/850x600/T/r/Trator-Agr_cola-John-Deere-6190J---Novo-agrofy-0-20231010123645.jpg",
+            "horas_w": "1500",
+            "pros_w": "2026-01-15",
+        })
+
+    return render_template('machinery.html', machines=machinerylista)
 
 @app.route('/products', methods=['GET', 'POST'])
-def products():
+def products(): # FUNCIONANDO 28/11 19:43
     if request.method == 'POST':
         product_name = request.form.get("product_name")
         categoria = request.form.get("categoria")
         quantidade = request.form.get("quantidade")
         unidade_medida = request.form.get("unidade_medida")
         storage_location = request.form.get("storage_location")
-        '''
-        inserção dos dados das despesas no banco
-        '''
-    else:
-        products = [
-            {
-                "id": 1,
-               "name": 'Organic Wheat Seed',
-                "type": 'Seed',
-                "location": 'Warehouse B, Section 3',
-                "quantity": 250,
-                "unit": 'kg',
-                "value": 15.50
-            }
-        ]
-            
-        return render_template('products.html', products=products)
+        value = request.form.get("value")
+        
+        conexao = sqlite3.connect("meu_banco.db")
+        cursor = conexao.cursor()
 
-@app.route('/harvest', methods=['GET', 'POST'])
+        cursor.execute("""
+            INSERT INTO products 
+            (product_name, categoria, quantidade, unidade_medida, storage_location, value)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (product_name, categoria, quantidade, unidade_medida, storage_location, value))
+
+        conexao.commit()
+        conexao.close()
+
+        return redirect('/products')
+
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT id, product_name, categoria, quantidade, unidade_medida, storage_location 
+        FROM products
+    """)
+    produtos = cursor.fetchall()
+    conexao.close()
+
+    products = []
+    for p in produtos:
+        products.append({
+            "id": p[0],
+            "name": p[1],
+            "type": p[2],
+            "quantity": p[3],
+            "unit": p[4],
+            "location": p[5],
+            "value": 0           
+        })
+
+    return render_template('products.html', products=products)
+
+            
+
+@app.route('/harvest', methods=['GET', 'POST']) # FUNCIONANDO 28/11 20:54
 def harvest():
     if request.method == 'POST':
         if 'crop_name' in request.form:
             crop_name = request.form.get("crop_name")
-            date = request.form.get("date")
-            expected_date = request.form.get("expected_date")
+            planting_date = request.form.get("planting_date")
+            harvest_date = request.form.get("harvest_date")
             estimated_yield = request.form.get("estimated_yield")
-            unidade_medida = request.form.get("unidade_medida")
-            initial_cost = request.form.get("initial_cost")
+            unit = request.form.get("unit")
+            cost = request.form.get("initial_cost")
 
             random_image = f"harvest/{random.randint(1,3)}.jpg"
             photo_url = url_for('static', filename=random_image)
-            '''
-            inserção dos dados das despesas no banco
-            '''
-            return redirect(url_for("harvest"))
-    else:
 
-        harvest = [
-            {
-                "id":1,
-                "crop_name": "corn",
-                "planting_date": "12 / 11 / 2024",
-                "harvest_date": "04 / 02 / 2025",
-                "estimated_yield": "10",
-                "unit": "kg",
-                "cost": "1200",
-                "url_photo" : "http://localhost:5000/static/harvest/2.jpg",
+            conexao = sqlite3.connect("meu_banco.db")
+            cursor = conexao.cursor()
 
-                #dados que serao calculados
-                "porcentagem":"60",
-                "status": "crescendo"
-            }
-        ]
-        return render_template('harvest.html', harvest=harvest)
+            cursor.execute("""
+            INSERT INTO harvest
+            (crop_name, planting_date, harvest_date, estimated_yield, unit, cost)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """, (crop_name, planting_date, harvest_date, estimated_yield, unit, cost))
+
+            conexao.commit()
+            conexao.close()
+
+
+            return redirect('/harvest')
+        
+    conexao = sqlite3.connect("meu_banco.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT id, crop_name, planting_date, harvest_date, estimated_yield, unit, cost
+        FROM harvest
+    """)
+    harvests = cursor.fetchall()
+    conexao.close()
+
+    harvest = []
+    for h in harvests:
+        harvest.append({
+            "id": h[0],
+            "crop_name": h[1],
+            "planting_date": h[2],
+            "harvest_date": h[3],
+            "estimated_yield": h[4],
+            "unit": h[5],
+            "cost": h[6],
+            "url_photo": "https://chb.com.br/storage/blog/174577.jpg",
+            "porcentagem":"60",
+            "status": "crescendo"
+        })
+
+    return render_template('harvest.html', harvest=harvest)
 
 @app.route('/verificate_email')
 def forgot_pass():
